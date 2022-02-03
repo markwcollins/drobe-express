@@ -8,7 +8,7 @@ interface IupdateWebPagesProps {
 }
 
 export default class UpdateWebPagesCron {
-  increment = 30
+  increment = 20
   queue: fastq.queueAsPromised<IupdateWebPagesProps, any>
 
   constructor() {
@@ -28,7 +28,6 @@ export default class UpdateWebPagesCron {
   }
 
   async updateWebPages ({ from, to }: IupdateWebPagesProps) {
-    
     const { data: products, error } = await Product.selectAndPopulate().range(from, to)
     if (!products || error) {
       return console.error(error)

@@ -11,14 +11,11 @@ app.get('/', (req, res) => {
   res.send('ok')
 })
 
-import checkPrices from './routes/webpages/check-prices'
-app.get('/webpages/check-prices', checkPrices)
 
 import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
-
 import schedule from 'node-schedule'
 
-schedule.scheduleJob('* 0 * * *', function() { // once a day at midnight
+schedule.scheduleJob('* 16 * * *', function() { // once a day at midnight
   const updateWebPagesCron = new UpdateWebPagesCron()
   updateWebPagesCron.init()
 })

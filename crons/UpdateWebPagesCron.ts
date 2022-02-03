@@ -8,7 +8,7 @@ interface IupdateWebPagesProps {
 }
 
 export default class UpdateWebPagesCron {
-  increment = 50
+  increment = 30
   queue: fastq.queueAsPromised<IupdateWebPagesProps, any>
 
   constructor() {
@@ -33,7 +33,6 @@ export default class UpdateWebPagesCron {
     if (!products || error) {
       return console.error(error)
     }
-    console.log('updateWebPages', from, to, products.length)
     
     products.forEach(product => {
       if (!product.webPage?.price) return // only get data if there is a price alredy attached to the page

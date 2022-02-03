@@ -129,7 +129,7 @@ export interface IWebPageBase extends ISupabaseUserResource {
   price?: string
   currency?: string
   updated_at?: Date
-  history?: JsonWebKey
+  history?: { [key in string]: { price: string } }
 }
 
 export interface IWebPagePopulated extends IWebPageBase {}

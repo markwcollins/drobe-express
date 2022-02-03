@@ -11,11 +11,17 @@ app.get('/', (req, res) => {
   res.send('ok')
 })
 
-
 import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 import schedule from 'node-schedule'
 
-schedule.scheduleJob('* 16 * * *', function() { // once a day at midnight
+// schedule.scheduleJob('* 16 * * *', function() { // once a day at midnight
+//   console.log('starting crons')
+//   const updateWebPagesCron = new UpdateWebPagesCron()
+//   updateWebPagesCron.init()
+// })
+
+schedule.scheduleJob('20 * * * *', function() { // once a day at midnight
+  console.log('starting crons')
   const updateWebPagesCron = new UpdateWebPagesCron()
   updateWebPagesCron.init()
 })

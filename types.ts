@@ -13,9 +13,9 @@ export enum Bucket {
 }
 
 export enum SupabaseTables {
-  PRODUCTS = 'products',
-  BOARDS = 'boards',
-  BOARD_ITEMS = 'boardd_items',
+  PRODUCTS = 'clothing_items', // products
+  BOARDS = 'outfits', // boards
+  BOARD_ITEMS = 'outfit_items', //outfit items
   WEB_PAGES = 'web_pages',
   SHOPS = 'shops',
   PROFILES = 'profiles',

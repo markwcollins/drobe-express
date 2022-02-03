@@ -50,12 +50,17 @@ export default class WebPage {
     if (!price) return
 
     const priceAsString = price.toString()
+
     if (priceAsString !== this.data.price) { // only update if the price is different
-      const history = this.data.history || {}
+
+      // default history if it doesn't exist yet
+      const oldHistory = this.data.history || { [ new Date(this.data.inserted_at!).getTime() ]: { price } } 
+
+      // update price to new price and add history
       await this.update({ 
         price, 
         history: { 
-          ...history,
+          ...oldHistory,
           [ Date.now() ]: { price } 
         } 
       })

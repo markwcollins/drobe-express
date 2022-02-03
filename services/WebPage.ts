@@ -50,7 +50,7 @@ export default class WebPage {
     if (!price) return
 
     const priceAsString = price.toString()
-    if (priceAsString !== this.data.price) { // only update if the price is different
+    if (priceAsString) { //} !== this.data.price) { // only update if the price is different
       const history = this.data.history || {}
       await this.update({ 
         price, 

@@ -1,12 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
+import CONFIG from '../config'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-const supabaseServiceRole = process.env.SUPABASE_SERVICE_ROLE!
+export const createSupabaseClient = () => createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
+export const createSupabaseApi = () => createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_SERVICE_ROLE)
 
-export const createSupabaseClient = () => createClient(supabaseUrl, supabaseAnonKey)
-export const createSupabaseApi = () => createClient(supabaseUrl, supabaseServiceRole)
+export const supabaseClient = createSupabaseClient()
+export const supabase = createSupabaseApi()
 
-export const supabase = createSupabaseClient()
-
-export const getUser = async (jwt:string, supabase=createSupabaseApi()) => supabase.auth.api.getUser(jwt)
+export const getUser = async (jwt: string) => supabase.auth.api.getUser(jwt)

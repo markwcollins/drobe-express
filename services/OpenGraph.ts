@@ -1,5 +1,5 @@
-const OPEN_GRAPH_BASE_REQUEST_URL = 'https://opengraph.io/api/1.1/site/'
-const OPEN_GRAPH_API_KEY = process.env.OPEN_GRAPH_API_KEY!
+import CONFIG from '../config'
+import axios from 'axios'
 
 export interface IOpenGraphFormattedData { 
   title?: string, 
@@ -15,8 +15,8 @@ export default class OpenGraph {
   rawResponse: any
   data: IOpenGraphFormattedData | undefined
   isValid: boolean | undefined
-  baseUrl = OPEN_GRAPH_BASE_REQUEST_URL
-  apiKey = OPEN_GRAPH_API_KEY
+  baseUrl = 'https://opengraph.io/api/1.1/site/'
+  apiKey = CONFIG.OPEN_GRAPH_API_KEY
 
   constructor(url:string) {
     this.url = url
@@ -36,21 +36,21 @@ export default class OpenGraph {
   async getData(url = this.url) {
     try {
       const requestUrl = this.generateOpenGraphRequestUrl(url)
-      const res = await fetch(requestUrl)
-      const data = await res.json()
-      return data.hybridGraph
+      const res = await axios.get(requestUrl)
+      return res.data.hybridGraph
     } catch (e) {
-      console.error(e)
+      if (axios.isAxiosError(e)) {
+        console.error('get og-data error', url, e.response?.data.message)
+      }
       return undefined
     }
   }
 
-  generateOpenGraphRequestUrl(url:string = this.url, baseUrl = this.baseUrl, apiKey = this.apiKey) {
-    const urlEncoded = encodeURIComponent(url)
-    return baseUrl + urlEncoded + '?app_id=' + apiKey
+  generateOpenGraphRequestUrl(url: string = this.url, baseUrl = this.baseUrl, apiKey = this.apiKey) {
+    return baseUrl + encodeURIComponent(url) + '?app_id=' + apiKey
   }
 
-  formatData(hybridGraph:any):IOpenGraphFormattedData {
+  formatData(hybridGraph: any): IOpenGraphFormattedData {
     const data:IOpenGraphFormattedData = {}
 
     if (hybridGraph.title) { 

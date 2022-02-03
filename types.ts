@@ -13,17 +13,17 @@ export enum Bucket {
 }
 
 export enum SupabaseTables {
-  PRODUCTS = 'clothing_items',
-  BOARDS = 'outfits',
-  BOARD_ITEMS = 'outfit_items',
+  PRODUCTS = 'products',
+  BOARDS = 'boards',
+  BOARD_ITEMS = 'boardd_items',
   WEB_PAGES = 'web_pages',
   SHOPS = 'shops',
   PROFILES = 'profiles',
 }
 
 export enum Folder {
-  BOARDS = 'outfits',
-  PRODUCTS = 'clothing_items'
+  BOARDS = 'boards',
+  PRODUCTS = 'products'
 }
 
 export enum UserAction {
@@ -85,8 +85,8 @@ export interface IProduct extends IProductPopulated {
 // BOARD_ITEMS
 
 export interface IBoardItemBase extends ISupabaseUserResource {
-  clothing_item_id?: ApiID //product_item_id?: ApiID
-  outfit_id: ApiID //board_id: ApiID
+  product_item_id?: ApiID //product_item_id?: ApiID
+  board_id: ApiID //board_id: ApiID
   pos_x: number
   pos_y: number
   rotate_z: number
@@ -129,6 +129,7 @@ export interface IWebPageBase extends ISupabaseUserResource {
   price?: string
   currency?: string
   updated_at?: Date
+  history?: JsonWebKey
 }
 
 export interface IWebPagePopulated extends IWebPageBase {}

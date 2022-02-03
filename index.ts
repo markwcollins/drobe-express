@@ -1,21 +1,28 @@
 import express from 'express'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 const PORT = 8000
 
-app.get('/', (req, res) => res.send('Test'))
+app.use(cookieParser())
+app.use(express.json())
+
+app.get('/', (req, res) => {
+  res.send('ok')
+})
 
 import checkPrices from './routes/webpages/check-prices'
 app.get('/webpages/check-prices', checkPrices)
 
+import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 
-import { initUpdateWebPagesCron } from './crons/updateWebPages'
-import cron from 'node-cron'
+import schedule from 'node-schedule'
 
-cron.schedule('* * * * *', () => {
-  initUpdateWebPagesCron()
+schedule.scheduleJob('* 0 * * *', function() { // once a day at midnight
+  const updateWebPagesCron = new UpdateWebPagesCron()
+  updateWebPagesCron.init()
 })
 
 app.listen(PORT, () => {
   console.log('Server is running')
-});
+})

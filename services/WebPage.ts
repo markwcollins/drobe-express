@@ -1,6 +1,6 @@
 import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
-import { ApiID, IWebPage, SupabaseTables } from '../types'
+import { ApiID, IWebPage, IIWebPageBaseHistory, SupabaseTables } from '../types'
 
 export default class WebPage {
   id: ApiID
@@ -26,7 +26,6 @@ export default class WebPage {
 
   async update(data:Partial<IWebPage>) {
     const { data: resData } = await supabase.from<IWebPage>(SupabaseTables.WEB_PAGES).update(data).eq('id', this.id)
-    console.log('update', this.id, data, resData)
     if (resData) {
       this.data = resData[0]
     }
@@ -46,24 +45,37 @@ export default class WebPage {
 
   async updateOpenGraphData() {
     const ogData = await this.extractOpenGraphData()
-    const price = ogData?.price
-    if (!price) return
+    const newPrice = ogData?.price
+    if (!newPrice) return
 
-    const priceAsString = price.toString()
+    const oldPrice = this.data.price
+    if (!oldPrice) return
 
-    if (priceAsString !== this.data.price) { // only update if the price is different
-
+    if (newPrice !== oldPrice) { // only update if the price is different
       // default history if it doesn't exist yet
-      const oldHistory = this.data.history || { [ new Date(this.data.inserted_at!).getTime() ]: { price } } 
-
+      const oldHistory = this.data.history || createHistory({ timestamp: new Date(this.data.inserted_at!).getTime(), price: oldPrice })
+        
       // update price to new price and add history
       await this.update({ 
-        price, 
-        history: { 
-          ...oldHistory,
-          [ Date.now() ]: { price } 
-        } 
+        price: newPrice, 
+        history: createHistory({ timestamp: Date.now(), price: newPrice, history: oldHistory })  
       })
     }
   }
 }
+
+interface IcreateHistory {
+  timestamp: number,
+  price: string
+  history?: IIWebPageBaseHistory 
+}
+
+const createHistory = ({ timestamp = Date.now(), price, history }: IcreateHistory ): IIWebPageBaseHistory => (
+  { 
+    timestamps: [ ...history?.timestamps || [], timestamp ], 
+    data: { 
+      ...history?.data || {},
+      [ timestamp ]: { price } 
+    } 
+  }
+)

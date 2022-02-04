@@ -51,7 +51,7 @@ export default class OpenGraph {
   }
 
   formatData(hybridGraph: any): IOpenGraphFormattedData {
-    const data:IOpenGraphFormattedData = {}
+    const data: IOpenGraphFormattedData = {}
 
     if (hybridGraph.title) { 
       data.title = hybridGraph.title
@@ -67,7 +67,7 @@ export default class OpenGraph {
     }
     if (hybridGraph.products?.length && hybridGraph.products[0].offers.length) {
       const offer = hybridGraph.products[0].offers[0]
-      data.price = offer.price
+      data.price = offer.price.toString() // force as string
       data.currency = offer.currency
     } 
 

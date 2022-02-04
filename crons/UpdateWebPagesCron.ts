@@ -18,7 +18,7 @@ export default class UpdateWebPagesCron {
   async init() {
     const { error, count } = await Product.api.select('*', { count: 'exact', head: true })
     if (!count || error) {
-      return console.error(error)
+      return console.error(count, error)
     }
 
     for (let from = 0; from <= count; from += this.increment) {

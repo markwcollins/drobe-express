@@ -12,10 +12,19 @@ export enum Bucket {
   PUBLIC = 'public'
 }
 
+// export enum SupabaseTables {
+//   PRODUCTS = 'products', 
+//   BOARDS = 'boards',
+//   BOARD_ITEMS = 'board_items',
+//   WEB_PAGES = 'web_pages',
+//   SHOPS = 'shops',
+//   PROFILES = 'profiles',
+// }
+
 export enum SupabaseTables {
-  PRODUCTS = 'clothing_items', // products
-  BOARDS = 'outfits', // boards
-  BOARD_ITEMS = 'outfit_items', //outfit items
+  PRODUCTS = 'clothing_items',
+  BOARDS = 'outfits',
+  BOARD_ITEMS = 'outfit_items',
   WEB_PAGES = 'web_pages',
   SHOPS = 'shops',
   PROFILES = 'profiles',
@@ -129,7 +138,14 @@ export interface IWebPageBase extends ISupabaseUserResource {
   price?: string
   currency?: string
   updated_at?: Date
-  history?: { [key in string]: { price: string } }
+  history?: IIWebPageBaseHistory
+}
+
+export interface IIWebPageBaseHistory {
+  timestamps: number[]
+  data: {
+    [key in string]: { price: string } 
+  }
 }
 
 export interface IWebPagePopulated extends IWebPageBase {}

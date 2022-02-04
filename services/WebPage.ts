@@ -16,9 +16,7 @@ export default class WebPage {
 
   async get() {
     const { data, error } = await WebPage.api.select().eq('id', this.id)
-    if (error) {
-      console.log(error)
-    } else if (data) {
+    if (data) {
       this.data = data[0]
     }
     return this.data

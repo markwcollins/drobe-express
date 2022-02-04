@@ -20,7 +20,7 @@ import schedule from 'node-schedule'
 //   updateWebPagesCron.init()
 // })
 
-schedule.scheduleJob('25 * * * *', function() { // once a day at midnight
+schedule.scheduleJob('59 * * * *', function() { // once a day at midnight
   console.log('starting crons')
   const updateWebPagesCron = new UpdateWebPagesCron()
   updateWebPagesCron.init()

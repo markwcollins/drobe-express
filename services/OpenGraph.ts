@@ -40,7 +40,7 @@ export default class OpenGraph {
       return res.data.hybridGraph
     } catch (e) {
       if (axios.isAxiosError(e)) {
-        console.error('get og-data error', url, e.response?.data.message)
+        console.error('get og-data error', url, e.response?.data, e.response?.status, e.response?.statusText)
       }
       return undefined
     }

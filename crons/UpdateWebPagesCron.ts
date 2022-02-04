@@ -8,7 +8,7 @@ interface IupdateWebPagesProps {
 }
 
 export default class UpdateWebPagesCron {
-  increment = 20
+  increment = 10
   queue: fastq.queueAsPromised<IupdateWebPagesProps, any>
 
   constructor() {
@@ -23,7 +23,7 @@ export default class UpdateWebPagesCron {
 
     for (let from = 0; from <= count; from += this.increment) {
       let to = from + this.increment
-      this.queue.push({ from, to })
+      await this.queue.push({ from, to })
     }
   }
 
@@ -33,10 +33,10 @@ export default class UpdateWebPagesCron {
       return console.error(error)
     }
     
-    products.forEach(product => {
-      if (!product.webPage?.price) return // only get data if there is a price alredy attached to the page
+    return await Promise.allSettled(products.map(async product => {
+      if (!product.webPage?.price) return// only get data if there is a price alredy attached to the page
       const webPage = new WebPage(product.webPage)
-      webPage.updateOpenGraphData()
-    })
+      return await webPage.updateOpenGraphData()
+    }))
   }
 }

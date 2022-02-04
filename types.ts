@@ -142,8 +142,8 @@ export interface IWebPageBase extends ISupabaseUserResource {
 }
 
 export interface IIWebPageBaseHistory {
-  timestamps: number[]
-  data: {
+  timestamps?: string[]
+  data?: {
     [key in string]: { price: string } 
   }
 }

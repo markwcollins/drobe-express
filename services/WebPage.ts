@@ -72,7 +72,7 @@ interface IcreateHistory {
 
 const createHistory = ({ timestamp = Date.now(), price, history }: IcreateHistory ): IIWebPageBaseHistory => (
   { 
-    timestamps: [ ...history?.timestamps || [], timestamp ], 
+    timestamps: [ ...history?.timestamps || [], timestamp.toString() ],
     data: { 
       ...history?.data || {},
       [ timestamp ]: { price } 

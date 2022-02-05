@@ -51,13 +51,22 @@ export default class WebPage {
 
     if (newPrice !== oldPrice) { // only update if the price is different
       // default history if it doesn't exist yet
-      const oldHistory = this.data.history || createHistory({ timestamp: new Date(this.data.inserted_at!).getTime(), price: oldPrice })
+      const oldHistory = this.data.history || WebPage.createHistory({ timestamp: new Date(this.data.inserted_at!).getTime(), price: oldPrice })
         
       // update price to new price and add history
       await this.update({ 
         price: newPrice, 
-        history: createHistory({ timestamp: Date.now(), price: newPrice, history: oldHistory })  
+        history: WebPage.createHistory({ timestamp: Date.now(), price: newPrice, history: oldHistory })  
       })
+    }
+  }
+
+  static createHistory({ timestamp = Date.now(), price, history }: IcreateHistory ): IIWebPageBaseHistory {
+    return {
+      data: [
+        ...history?.data || [],
+        { timestamp, price }
+      ]
     }
   }
 }
@@ -67,13 +76,3 @@ interface IcreateHistory {
   price: string
   history?: IIWebPageBaseHistory 
 }
-
-const createHistory = ({ timestamp = Date.now(), price, history }: IcreateHistory ): IIWebPageBaseHistory => (
-  { 
-    timestamps: [ ...history?.timestamps || [], timestamp.toString() ],
-    data: { 
-      ...history?.data || {},
-      [ timestamp ]: { price } 
-    } 
-  }
-)

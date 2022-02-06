@@ -15,7 +15,7 @@ export default class WebPage {
   }
 
   get isValid() {
-    return this.data.price && this.data.page_found
+    return this.data.price && this.data.page_not_found
   }
 
   async get() {
@@ -43,7 +43,7 @@ export default class WebPage {
       await this.openGraphData.init()
     }
     if (!this.openGraphData?.isValid) {
-      this.update({ page_found: false })
+      this.update({ page_not_found: true })
     }
 
     return this.openGraphData?.data

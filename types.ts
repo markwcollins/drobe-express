@@ -12,23 +12,15 @@ export enum Bucket {
   PUBLIC = 'public'
 }
 
-// export enum SupabaseTables {
-//   PRODUCTS = 'products', 
-//   BOARDS = 'boards',
-//   BOARD_ITEMS = 'board_items',
-//   WEB_PAGES = 'web_pages',
-//   SHOPS = 'shops',
-//   PROFILES = 'profiles',
-// }
-
 export enum SupabaseTables {
-  PRODUCTS = 'clothing_items',
-  BOARDS = 'outfits',
-  BOARD_ITEMS = 'outfit_items',
+  PRODUCTS = 'products', 
+  BOARDS = 'boards',
+  BOARD_ITEMS = 'board_items',
   WEB_PAGES = 'web_pages',
   SHOPS = 'shops',
   PROFILES = 'profiles',
 }
+
 
 export enum Folder {
   BOARDS = 'boards',
@@ -89,13 +81,15 @@ export interface IProductPopulated extends IProductBase {
 
 export interface IProduct extends IProductPopulated {
   price: number
+  previousPrice?: number
+  priceChanged: boolean
 }
 
 // BOARD_ITEMS
 
 export interface IBoardItemBase extends ISupabaseUserResource {
-  product_item_id?: ApiID //product_item_id?: ApiID
-  board_id: ApiID //board_id: ApiID
+  product_id?: ApiID 
+  board_id: ApiID
   pos_x: number
   pos_y: number
   rotate_z: number
@@ -139,7 +133,7 @@ export interface IWebPageBase extends ISupabaseUserResource {
   currency?: string
   updated_at?: Date
   history?: IIWebPageBaseHistory
-  page_found: boolean
+  page_not_found?: boolean
 }
 
 export interface IIWebPageBaseHistory {
@@ -173,7 +167,7 @@ export interface IProductCategory extends IDefault {
   id: string,
   title: string,
   keywords: string[],
-  page_found: boolean,
+  active: boolean,
   regexString: RegExp
 }
 

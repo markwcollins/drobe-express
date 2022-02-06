@@ -14,6 +14,10 @@ export default class WebPage {
     this.openGraphData = undefined
   }
 
+  get isValid() {
+    return this.data.price && this.data.page_found
+  }
+
   async get() {
     const { data, error } = await WebPage.api.select().eq('id', this.id)
     if (data) {
@@ -38,9 +42,13 @@ export default class WebPage {
       this.openGraphData = new OpenGraph(this.data.url)
       await this.openGraphData.init()
     }
+    if (!this.openGraphData?.isValid) {
+      this.update({ page_found: false })
+    }
+
     return this.openGraphData?.data
   }
-
+  
   async updateOpenGraphData() {
     const ogData = await this.extractOpenGraphData()
     const newPrice = ogData?.price
@@ -60,6 +68,7 @@ export default class WebPage {
       })
     }
   }
+  
 
   static createHistory({ timestamp = Date.now(), price, history }: IcreateHistory ): IIWebPageBaseHistory {
     return {

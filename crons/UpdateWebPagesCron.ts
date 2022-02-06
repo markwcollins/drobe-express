@@ -34,8 +34,9 @@ export default class UpdateWebPagesCron {
     }
     
     return await Promise.allSettled(products.map(async product => {
-      if (!product.webPage?.price) return// only get data if there is a price alredy attached to the page
+      if (!product.webPage) return
       const webPage = new WebPage(product.webPage)
+      if(!webPage.isValid) return  // only get data if there is a price alredy attached to the page and we the page is page_found
       return await webPage.updateOpenGraphData()
     }))
   }

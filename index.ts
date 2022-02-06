@@ -19,11 +19,11 @@ import schedule from 'node-schedule'
 // rule.hour = 0
 // rule.minute = 0
 
-schedule.scheduleJob('* * 1 * * *', function() { // once a day at midnight utc time
-  console.log('starting crons')
-  const updateWebPagesCron = new UpdateWebPagesCron()
-  updateWebPagesCron.init()
-})
+// schedule.scheduleJob('* * 1 * * *', function() { // once a day at midnight utc time
+//   console.log('starting crons')
+//   const updateWebPagesCron = new UpdateWebPagesCron()
+//   updateWebPagesCron.init()
+// })
 
 app.listen(PORT, () => {
   console.log('Server is running')

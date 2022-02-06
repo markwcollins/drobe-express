@@ -139,6 +139,7 @@ export interface IWebPageBase extends ISupabaseUserResource {
   currency?: string
   updated_at?: Date
   history?: IIWebPageBaseHistory
+  page_found: boolean
 }
 
 export interface IIWebPageBaseHistory {
@@ -172,7 +173,7 @@ export interface IProductCategory extends IDefault {
   id: string,
   title: string,
   keywords: string[],
-  active: boolean,
+  page_found: boolean,
   regexString: RegExp
 }
 

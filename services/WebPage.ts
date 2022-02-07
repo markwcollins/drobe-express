@@ -42,6 +42,8 @@ export default class WebPage {
       this.openGraphData = new OpenGraph(this.data.url)
       await this.openGraphData.init()
     }
+
+    // if we didnt get a response then we set the page as not found so we dont rescan the page
     if (!this.openGraphData?.isValid) {
       this.update({ page_not_found: true })
     }

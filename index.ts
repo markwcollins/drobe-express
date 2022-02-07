@@ -14,16 +14,16 @@ app.get('/', (req, res) => {
 import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 import schedule from 'node-schedule'
 
-// const rule = new schedule.RecurrenceRule()
-// rule.dayOfWeek = [0, 2, 4, 6]
-// rule.hour = 0
-// rule.minute = 0
+const rule = new schedule.RecurrenceRule()
+rule.dayOfWeek = [0, 2, 4, 6]
+rule.hour = 0
+rule.minute = 0
 
-// schedule.scheduleJob('* * 1 * * *', function() { // once a day at midnight utc time
-//   console.log('starting crons')
-//   const updateWebPagesCron = new UpdateWebPagesCron()
-//   updateWebPagesCron.init()
-// })
+schedule.scheduleJob(rule, function() { // once a day at midnight utc time
+  console.log('starting crons')
+  const updateWebPagesCron = new UpdateWebPagesCron()
+  updateWebPagesCron.init()
+})
 
 app.listen(PORT, () => {
   console.log('Server is running')

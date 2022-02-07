@@ -22,8 +22,7 @@ export default class UpdateWebPagesCron {
     }
 
     for (let from = 0; from <= count; from += this.increment) {
-      let to = from + this.increment
-      await this.queue.push({ from, to })
+      await this.queue.push({ from, to: from + this.increment })
     }
   }
 

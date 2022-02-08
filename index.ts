@@ -22,8 +22,8 @@ import schedule from 'node-schedule'
 
 const rule = new schedule.RecurrenceRule()
 rule.dayOfWeek = [0, 1, 2, 4, 4, 5, 6] // every 2nd day
-rule.hour = 0
-rule.minute = 0
+rule.hour = 23
+rule.minute = 45
 
 schedule.scheduleJob(rule, function() { // once a day at midnight utc time
   console.log('starting crons')

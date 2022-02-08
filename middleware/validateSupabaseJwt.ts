@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { User } from '@supabase/supabase-js'
 import { getUser } from '../services/supabase'
 
-export type ApiHandlerWithSupabaseJwt = (req: Request, res: Response, data: { user: User }) => any
+export type ApiHandlerWithSupabaseJwt = (req: Request, res: Response, data: { user: User, accessToken: string }) => any
 
 export const validateSupabaseJwt = (handler: ApiHandlerWithSupabaseJwt) => async (req: Request, res: Response) => {
   const jwt = req.cookies['X-Supabase-Auth']
@@ -15,5 +15,5 @@ export const validateSupabaseJwt = (handler: ApiHandlerWithSupabaseJwt) => async
     return res.status(400).send('User not found')
   }
 
-  return handler(req, res, { user })
+  return handler(req, res, { user, accessToken: jwt })
 }

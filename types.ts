@@ -133,7 +133,7 @@ export interface IWebPageBase extends ISupabaseUserResource {
   currency?: string
   updated_at?: Date
   history?: IIWebPageBaseHistory
-  page_not_found?: boolean
+  page_found?: boolean
 }
 
 export interface IIWebPageBaseHistory {

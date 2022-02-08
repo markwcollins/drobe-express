@@ -15,7 +15,7 @@ export default class WebPage {
   }
 
   get isValid() {
-    return this.data.price && this.data.page_not_found
+    return this.data.price && this.data.page_found
   }
 
   async get() {
@@ -45,7 +45,7 @@ export default class WebPage {
 
     // if we didnt get a response then we set the page as not found so we dont rescan the page
     if (!this.openGraphData?.isValid) {
-      this.update({ page_not_found: true })
+      this.update({ page_found: false })
     }
 
     return this.openGraphData?.data

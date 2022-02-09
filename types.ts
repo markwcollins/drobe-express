@@ -83,6 +83,7 @@ export interface IProduct extends IProductPopulated {
   price: number
   previousPrice?: number
   priceChanged: boolean
+  currency?: string
 }
 
 // BOARD_ITEMS
@@ -182,3 +183,14 @@ export enum AUTH_ACTION {
   SIGN_IN = 'SIGN_IN',
   CONVERT_GUEST_TO_USER = 'CONVERT_GUEST_TO_USER'
 }
+
+// OPEN GRAPH
+
+export interface IOpenGraphFormattedData { 
+  title?: string, 
+  site_name?: string, 
+  image_url?: string, 
+  description?: string, 
+  price?: string, 
+  currency?: string 
+} 

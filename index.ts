@@ -11,8 +11,8 @@ app.get('/', (req, res) => {
   res.send('ok')
 })
 
-// import openGraph from 'routes/openGraph'
-// app.get('/open-graph', openGraph)
+import openGraph from './routes/openGraph'
+app.post('/open-graph', openGraph)
 
 // import convertGuestToUser from 'routes/convertGuestToUser'
 // app.get('/convert-guest-to-user', convertGuestToUser)
@@ -22,15 +22,15 @@ import schedule from 'node-schedule'
 
 const rule = new schedule.RecurrenceRule()
 rule.dayOfWeek = [0, 1, 2, 4, 4, 5, 6] // every 2nd day
-rule.hour = 23
+rule.hour = 20 // utc time
 rule.minute = 45
 
-schedule.scheduleJob(rule, function() { // once a day at midnight utc time
+schedule.scheduleJob(rule, function() {
   console.log('starting crons')
   const updateWebPagesCron = new UpdateWebPagesCron()
   updateWebPagesCron.init()
 })
 
 app.listen(PORT, () => {
-  console.log('Server is running')
+  console.log(`Server is running running on ${PORT}`)
 })

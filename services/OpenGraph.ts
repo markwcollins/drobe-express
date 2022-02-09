@@ -1,14 +1,6 @@
 import CONFIG from '../config'
 import axios from 'axios'
-
-export interface IOpenGraphFormattedData { 
-  title?: string, 
-  site_name?: string, 
-  image_url?: string, 
-  description?: string, 
-  price?: string, 
-  currency?: string 
-} 
+import { IOpenGraphFormattedData } from '../types'
 
 export default class OpenGraph {
   url: string
@@ -18,7 +10,7 @@ export default class OpenGraph {
   baseUrl = 'https://opengraph.io/api/1.1/site/'
   apiKey = CONFIG.OPEN_GRAPH_API_KEY
 
-  constructor(url:string) {
+  constructor(url: string) {
     this.url = url
     this.data = undefined
     this.isValid = undefined
@@ -34,20 +26,39 @@ export default class OpenGraph {
   }
 
   async getData(url = this.url) {
-    try {
-      const requestUrl = this.generateOpenGraphRequestUrl(url)
-      const res = await axios.get(requestUrl)
-      return res.data.hybridGraph
-    } catch (e) {
-      if (axios.isAxiosError(e)) {
-        console.error('get og-data error', url, e.response?.data, e.response?.status, e.response?.statusText)
-      }
-      return undefined
+    let graphData: any
+    ({ graphData } = await this.openGraphRequest({ url } ));
+    if (!graphData) { 
+      ({ graphData } = await this.openGraphRequest({ url, useProxy: true })); // retry with proxy
     }
+    if (!graphData) { 
+      ({ graphData } = await this.openGraphRequest({ url, useProxy: true, fullRender: true })); // retry with proxy and full render
+    }
+    return graphData
   }
 
-  generateOpenGraphRequestUrl(url: string = this.url, baseUrl = this.baseUrl, apiKey = this.apiKey) {
-    return baseUrl + encodeURIComponent(url) + '?app_id=' + apiKey
+  async openGraphRequest({ url = this.url, baseUrl = this.baseUrl, apiKey = this.apiKey, useProxy = false, fullRender = false }) {
+    let error: Error|undefined
+    let graphData: any 
+
+    try {
+      const urlEncoded = encodeURIComponent(url)
+      const requestUrl = `${baseUrl}${urlEncoded}?app_id=${apiKey}&use_proxy=${useProxy}&full_render=${fullRender}`
+      const res = await axios.get(requestUrl)
+      graphData =  res.data.hybridGraph
+      if (!graphData) { 
+        error = new Error(`hybridGraph data missing: ${url} use_proxy=${useProxy}&full_render=${fullRender}`)
+        throw error
+      }
+    } catch(e) {
+      if (axios.isAxiosError(e)) {
+        error = e
+        console.error('get og-data error', url, e.response?.data, e.response?.status, e.response?.statusText)
+      } else {
+        console.error(e)
+      }
+    }
+    return { graphData, error }
   }
 
   formatData(hybridGraph: any): IOpenGraphFormattedData {

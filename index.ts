@@ -11,11 +11,19 @@ app.get('/', (req, res) => {
   res.send('ok')
 })
 
-import openGraph from './routes/openGraph'
-app.post('/api/open-graph', openGraph)
+const router = express.Router()
 
-import convertGuestToUser from 'routes/convertGuestToUser'
-app.get('/api/convert-guest-to-user', convertGuestToUser)
+router.get('/health', (req, res) => {
+  res.send('ok')
+})
+
+import openGraph from './routes/openGraph'
+router.post('/open-graph', openGraph)
+
+import convertGuestToUser from './routes/convertGuestToUser'
+router.post('/convert-guest-to-user', convertGuestToUser)
+
+app.use('/api', router)
 
 import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 import schedule from 'node-schedule'

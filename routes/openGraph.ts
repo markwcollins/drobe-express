@@ -1,6 +1,5 @@
 import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/validateSupabaseJwt'
 import OpenGraph from '../services/OpenGraph'
-// import { Request, Response } from 'express'
 
 const handler:ApiHandlerWithSupabaseJwt = async (req, res) => {
   const urls = req.body?.urls as string[] | undefined
@@ -21,4 +20,3 @@ const handler:ApiHandlerWithSupabaseJwt = async (req, res) => {
 }
 
 export default validateSupabaseJwt(handler) 
-// export default handler

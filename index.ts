@@ -12,10 +12,10 @@ app.get('/', (req, res) => {
 })
 
 import openGraph from './routes/openGraph'
-app.post('/open-graph', openGraph)
+app.post('/api/open-graph', openGraph)
 
-// import convertGuestToUser from 'routes/convertGuestToUser'
-// app.get('/convert-guest-to-user', convertGuestToUser)
+import convertGuestToUser from 'routes/convertGuestToUser'
+app.get('/api/convert-guest-to-user', convertGuestToUser)
 
 import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 import schedule from 'node-schedule'

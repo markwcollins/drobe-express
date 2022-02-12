@@ -23,7 +23,7 @@ router.post('/open-graph', openGraph)
 import convertGuestToUser from './routes/convertGuestToUser'
 router.post('/convert-guest-to-user', convertGuestToUser)
 
-app.use('/v2', router)
+app.use('/api/v2', router)
 
 import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 import schedule from 'node-schedule'

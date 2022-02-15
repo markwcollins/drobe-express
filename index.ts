@@ -29,7 +29,7 @@ import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
 import schedule from 'node-schedule'
 
 const rule = new schedule.RecurrenceRule()
-rule.dayOfWeek = [0, 1, 2, 4, 4, 5, 6] // every 2nd day
+rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6] // every 2nd day
 rule.hour = 20 // utc time
 rule.minute = 45
 

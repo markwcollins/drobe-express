@@ -1,6 +1,7 @@
 import fastq from 'fastq'
 import WebPage from '../services/WebPage'
 import Product from '../services/Product'
+import { IProduct } from '../types'
 
 interface IupdateWebPagesProps {
   from: number
@@ -29,14 +30,29 @@ export default class UpdateWebPagesCron {
   async updateWebPages ({ from, to }: IupdateWebPagesProps) {
     const { data: products, error } = await Product.selectAndPopulate().range(from, to)
     if (!products || error) {
-      return console.error(error)
+      console.error(error)
+      return false
     }
     
-    return await Promise.allSettled(products.map(async product => {
-      if (!product.webPage) return
-      const webPage = new WebPage(product.webPage)
-      if(!webPage.isValid) return  // only get data if there is a price alredy attached to the page and we the page is page_found
-      return await webPage.updateOpenGraphData()
+    return await Promise.allSettled(products.map(async productData => {
+      try {
+        if (!productData.webPage) throw new Error('productData.webPage is missing')
+        const webPage = new WebPage(productData.webPage)
+        if(!webPage.isValid) throw new Error('webPage.isValid is not missing')
+        // only get data if there is a price alredy attached to the page and we the page is page_found
+
+        await webPage.updateOpenGraphData()
+        const data = webPage.openGraphData?.data
+        if(data) {
+          // prices data is on both the product and web page so we need to update both
+          const product = new Product(productData)
+          product.update({ price: data.price, currency: data.currency, title: data.title })
+        }
+        return true
+      } catch (e) {
+        // console.log(e)
+        return false
+      }
     }))
   }
 }

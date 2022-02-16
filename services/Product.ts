@@ -4,7 +4,7 @@ import { ApiID, IProduct, IProductPopulated, SupabaseTables } from '../types'
 
 export default class Product {
   id: ApiID
-  data: IProduct
+  data: IProduct|IProductPopulated
   static api = supabase.from<IProduct>(SupabaseTables.PRODUCTS)
   static populateQuery = `
     * , 
@@ -13,7 +13,7 @@ export default class Product {
     )
   `
 
-  constructor(data: IProduct) {
+  constructor(data: IProduct|IProductPopulated) {
     this.data = data
     this.id = this.data.id
   }

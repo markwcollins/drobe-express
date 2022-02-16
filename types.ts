@@ -29,7 +29,9 @@ export enum Folder {
 
 export enum UserAction {
   ONBOARDED = 'onboarded',
-  SHOP_SCREENSHOT = 'shop_screenshot'
+  SHOP_SCREENSHOT = 'shop_screenshot',
+  LOADED_DEMO_DATA = 'loaded_demo_data',
+  REMOVED_DEMO_DATA  = 'removed_demo_data'
 }
 
 export interface IDefault {
@@ -73,6 +75,11 @@ export interface IProductBase extends ISupabaseUserResource {
   web_page_id?: ApiID
   google_vision_labels?: string[]
   owned?: boolean
+  title?: string
+  price?: string
+  currency?: string
+  source_demo?: boolean
+
 }
 
 export interface IProductPopulated extends IProductBase {
@@ -80,10 +87,28 @@ export interface IProductPopulated extends IProductBase {
 }
 
 export interface IProduct extends IProductPopulated {
-  price: number
+  priceValue: number
   previousPrice?: number
   priceChanged: boolean
   currency?: string
+}
+
+// BOARDS
+
+export interface IBoardBase extends ISupabaseUserResource  {
+  bucket: Bucket
+  location: string
+  deleted?: boolean
+  products?: IProduct[]
+  source_demo?: boolean
+}
+
+export interface IBoardPopulated extends IBoardBase  {
+  boardItems?: IBoardItem[] 
+}
+
+export interface IBoard extends IBoardPopulated  {
+  price?: number
 }
 
 // BOARD_ITEMS
@@ -96,27 +121,11 @@ export interface IBoardItemBase extends ISupabaseUserResource {
   rotate_z: number
   scale: number
   zIndex?: number
+  source_demo?: boolean
 }
 
 export interface IBoardItem extends IBoardItemBase {
   product?: IProduct
-}
-
-// BOARDS
-
-export interface IBoardBase extends ISupabaseUserResource  {
-  bucket: Bucket
-  location: string
-  deleted?: boolean
-  products?: IProduct[]
-}
-
-export interface IBoardPopulated extends IBoardBase  {
-  boardItems?: IBoardItem[] 
-}
-
-export interface IBoard extends IBoardPopulated  {
-  price: number
 }
 
 // WEBPAGES

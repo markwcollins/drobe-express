@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import CONFIG from '../config'
-import { ApiID, IDefault } from '../types'
+import { ApiID, IDefault, SupabaseTables } from '../types'
 import { SupabaseQueryBuilder } from '@supabase/supabase-js/dist/main/lib/SupabaseQueryBuilder'
 
 export const createSupabaseClient = () => createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
@@ -14,7 +14,8 @@ export const getUser = async (jwt: string) => supabase.auth.api.getUser(jwt)
 // export abstract class SupabaseResource<T extends IDefault> {
 //   id: ApiID
 //   data: T
-//   abstract api: SupabaseQueryBuilder<T>
+//   supabase = supabase
+//   abstract table: SupabaseTables
 //   abstract populateQuery: string
 
 //   constructor(data: T) {
@@ -22,14 +23,12 @@ export const getUser = async (jwt: string) => supabase.auth.api.getUser(jwt)
 //     this.id =  this.data.id
 //   }
 
-//   select() {
-//     return this.api.select(this.populateQuery)
+//   public static select(this: SupabaseResource<T>) {
+//     return  supabase.from(SupabaseResource.table).select(this.populateQuery)
 //   }
 
-
-
 //   async get() {
-//     const { data, error } = await this.api.select(this.populateQuery).eq('id', this.id)
+//     const { data, error } = await supabase.from(this.table).select(this.populateQuery).eq('id', this.id)
 //     if (data) {
 //       this.data = data[0]
 //     }

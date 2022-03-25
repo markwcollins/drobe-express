@@ -7,15 +7,21 @@ const PORT = 8000
 app.use(cookieParser())
 app.use(express.json())
 
+import cors from 'cors'
+app.use(cors())
+
 app.get('/', (req, res) => {
+  res.send('ok')
+})
+
+app.get('/health', (req, res) => {
   res.send('ok')
 })
 
 const router = express.Router()
 
-router.get('/health', (req, res) => {
-  res.send('ok')
-})
+import proxy from './routes/proxyUrl'
+router.post('/proxy-url', proxy)
 
 import openGraph from './routes/openGraph'
 router.post('/open-graph', openGraph)
@@ -25,19 +31,8 @@ router.post('/convert-guest-to-user', convertGuestToUser)
 
 app.use('/api/v2', router)
 
-import UpdateWebPagesCron from './crons/UpdateWebPagesCron'
-import schedule from 'node-schedule'
-
-const rule = new schedule.RecurrenceRule()
-rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6] // every 2nd day
-rule.hour = 20 // utc time
-rule.minute = 45
-
-schedule.scheduleJob(rule, function() {
-  console.log('starting crons')
-  const updateWebPagesCron = new UpdateWebPagesCron()
-  updateWebPagesCron.init()
-})
+import { initCrons } from 'crons'
+initCrons()
 
 app.listen(PORT, () => {
   console.log(`Server is running running on ${PORT}`)

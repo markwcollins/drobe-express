@@ -76,9 +76,11 @@ export default class OpenGraph {
     if (hybridGraph.description) {
       data.description = hybridGraph.description
     }
-    if (hybridGraph.products?.length && hybridGraph.products[0].offers.length) {
+    if (hybridGraph.products?.length && hybridGraph.products[0]?.offers.length) {
       const offer = hybridGraph.products[0].offers[0]
-      data.price = offer.price.toString() // force as string
+      if (offer.price) {
+        data.price = offer.price.toString() // force as string
+      }
       data.currency = offer.currency
     } 
 

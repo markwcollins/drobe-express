@@ -31,7 +31,7 @@ router.post('/convert-guest-to-user', convertGuestToUser)
 
 app.use('/api/v2', router)
 
-import { initCrons } from 'crons'
+import { initCrons } from './crons'
 initCrons()
 
 app.listen(PORT, () => {

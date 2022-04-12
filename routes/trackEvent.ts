@@ -12,32 +12,33 @@ import { addUserToKlaviyoList } from '../services/Klaviyo'
 */
 
 const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
-  const email = user.email
-  if (!email) {
-    return res.status(400).send('error retrieving user email')
-  }
-
-  const eventName = req.body?.eventName as EVENT_NAME
-  if (!eventName) {
-    return res.status(400).send('eventName missing')
-  }
-
-  if (!Object.values(EventsForAPI).includes(eventName)) {
-    return res.status(400).send('unknown eventName')
-  }
-
-  const actionSource = req.body?.actionSource as ACTION_SOURCE
-  if (!actionSource) {
-    return res.status(400).send('actionSource missing')
-  }
-  if (!Object.values(ACTION_SOURCE).includes(actionSource)) {
-    return res.status(400).send('unknown actionSource')
-  }
-
-  const eventSourceUrl: string|undefined = req.body?.eventSourceUrl
-  const userAgent = req.headers['user-agent']
-
   try {
+    const email = user.email
+    if (!email) {
+      throw new Error('error retrieving user email')
+    }
+  
+    const eventName = req.body?.eventName as EVENT_NAME
+    if (!eventName) {
+      throw new Error('eventName missing')
+    }
+    console.log(eventName)
+  
+    if (!Object.values(EventsForAPI).includes(eventName)) {
+      throw new Error('unknown eventName')
+    }
+  
+    const actionSource = req.body?.actionSource as ACTION_SOURCE
+    if (!actionSource) {
+      throw new Error('actionSource missing')
+    }
+    if (!Object.values(ACTION_SOURCE).includes(actionSource)) {
+      throw new Error('unknown actionSource')
+    }
+  
+    const eventSourceUrl: string|undefined = req.body?.eventSourceUrl
+    const userAgent = req.headers['user-agent']
+
     if (eventName === EVENT_NAME.SignedUp) {
       addUserToKlaviyoList({ email })
     }

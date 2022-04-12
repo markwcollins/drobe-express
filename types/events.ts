@@ -1,4 +1,4 @@
-export enum EventName {
+export enum EVENT_NAME {
   SignedUp = 'Signed Up',
   AppLoaded = 'App Loaded',
   ChromeExtensionLoaded = 'Chrome Extension Loaded',
@@ -11,15 +11,23 @@ export enum EventName {
 }
 
 export const EventsForAPI = [
-  EventName.SignedUp,
-  EventName.AppLoaded,
-  EventName.ChromeExtensionLoaded,
-  EventName.AddedToWishList,
-  EventName.CreatedBoard
+  EVENT_NAME.SignedUp,
+  EVENT_NAME.AppLoaded,
+  EVENT_NAME.ChromeExtensionLoaded,
+  EVENT_NAME.AddedToWishList,
+  EVENT_NAME.CreatedBoard
+]
+
+export const EventsForAppsFlyer = [
+  EVENT_NAME.SignedUp,
+  EVENT_NAME.AppLoaded,
+  EVENT_NAME.ChromeExtensionLoaded,
+  EVENT_NAME.AddedToWishList,
+  EVENT_NAME.CreatedBoard
 ]
 
 // these are required by facebook
-export enum ActionSource { 
+export enum ACTION_SOURCE { 
   WEBSITE = 'website',
   APP = 'app'
 }

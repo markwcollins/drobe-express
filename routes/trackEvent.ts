@@ -1,6 +1,6 @@
 import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/validateSupabaseJwt'
 import { createFacebookConversionEvent } from '../services/FacebookEvent'
-import { EventName, ActionSource, EventsForAPI } from '../types/events'
+import { EVENT_NAME, ACTION_SOURCE, EventsForAPI } from '../types/events'
 import { addUserToKlaviyoList } from '../services/Klaviyo'
 
 /*
@@ -17,7 +17,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
     return res.status(400).send('error retrieving user email')
   }
 
-  const eventName = req.body?.eventName as EventName
+  const eventName = req.body?.eventName as EVENT_NAME
   if (!eventName) {
     return res.status(400).send('eventName missing')
   }
@@ -26,11 +26,11 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
     return res.status(400).send('unknown eventName')
   }
 
-  const actionSource = req.body?.actionSource as ActionSource
+  const actionSource = req.body?.actionSource as ACTION_SOURCE
   if (!actionSource) {
     return res.status(400).send('actionSource missing')
   }
-  if (!Object.values(ActionSource).includes(actionSource)) {
+  if (!Object.values(ACTION_SOURCE).includes(actionSource)) {
     return res.status(400).send('unknown actionSource')
   }
 
@@ -38,7 +38,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
   const userAgent = req.headers['user-agent']
 
   try {
-    if (eventName === EventName.SignedUp) {
+    if (eventName === EVENT_NAME.SignedUp) {
       addUserToKlaviyoList({ email })
     }
 
@@ -52,5 +52,4 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
 }
 
 export default validateSupabaseJwt(handler) 
-
 

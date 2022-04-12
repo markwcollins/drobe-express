@@ -1,6 +1,6 @@
 import cyrpto from 'crypto'
 import CONFIG from '../config'
-import { EventName, ActionSource } from '../types/events'
+import { EVENT_NAME, ACTION_SOURCE } from '../types/events'
 
 const FACEBOOK_ACCESS_TOKEN = CONFIG.FACEBOOK_ACCESS_TOKEN
 const FACEBOOK_PIXEL_ID = CONFIG.FACEBOOK_PIXEL_ID
@@ -11,8 +11,8 @@ const api = facebookSdk.FacebookAdsApi.init(FACEBOOK_ACCESS_TOKEN)
 
 interface IcreateFacebookConversionApiEvent { 
   email: string
-  eventName: EventName
-  actionSource: ActionSource
+  eventName: EVENT_NAME
+  actionSource: ACTION_SOURCE
   eventSourceUrl?: string
   userAgent?: string
 }

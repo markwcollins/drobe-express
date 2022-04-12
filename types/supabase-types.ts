@@ -19,8 +19,9 @@ export enum SupabaseTables {
   WEB_PAGES = 'web_pages',
   SHOPS = 'shops',
   PROFILES = 'profiles',
+  CONTENTS = 'contents',
+  USER_CONTENTS = 'contents',
 }
-
 
 export enum Folder {
   BOARDS = 'boards',
@@ -28,10 +29,15 @@ export enum Folder {
 }
 
 export enum UserAction {
-  ONBOARDED = 'onboarded',
+  ONBOARDED_CHROME = 'onboarded_chrome',
+  ONBOARDED_APP = 'onboarded',
   SHOP_SCREENSHOT = 'shop_screenshot',
   LOADED_DEMO_DATA = 'loaded_demo_data',
-  REMOVED_DEMO_DATA  = 'removed_demo_data'
+  REMOVED_DEMO_DATA  = 'removed_demo_data', 
+}
+
+export type IUserAction = {
+  [key in UserAction]?: Date
 }
 
 export interface IDefault {
@@ -44,7 +50,18 @@ export interface IUser {
   email: string
 }
 
-export interface ISupabaseResource extends IDefault {
+export enum CHANNELS {
+  WEBSITE = 'website',
+  APP = 'app',
+  CHROME = 'chrome'
+}
+
+export interface ISupabaseUpdateResource {
+  updated_by?: ApiID
+  updated_in_channel?: CHANNELS,
+}
+
+export interface ISupabaseResource extends IDefault, ISupabaseUpdateResource {
   inserted_at?: Date
   updated_at?: Date
 }
@@ -54,8 +71,9 @@ export interface IProfile extends ISupabaseResource {
   email: string
   first_name: string
   last_name: string
-  user_type: AUTH_TYPE
-  completed_actions?: {[key in UserAction]: Date}
+  user_type: USER_TYPE
+  sign_up_channel?: CHANNELS
+  completed_actions?: IUserAction
 }
 
 export interface ISupabaseUserResource extends ISupabaseResource {
@@ -69,7 +87,7 @@ export interface ISupabaseUserResource extends ISupabaseResource {
 
 export interface IProductBase extends ISupabaseUserResource {
   bucket: Bucket
-  location: string
+  location?: string
   deleted?: boolean
   background_removed?: boolean
   web_page_id?: ApiID
@@ -79,15 +97,15 @@ export interface IProductBase extends ISupabaseUserResource {
   price?: string
   currency?: string
   source_demo?: boolean
-
+  source_image_url?: string
 }
 
 export interface IProductPopulated extends IProductBase {
   webPage?: IWebPage
 }
 
-export interface IProduct extends IProductPopulated {
-  priceValue: number
+export interface IProduct extends Omit<IProductPopulated, 'price'> {
+  price: number
   previousPrice?: number
   priceChanged: boolean
   currency?: string
@@ -97,7 +115,7 @@ export interface IProduct extends IProductPopulated {
 
 export interface IBoardBase extends ISupabaseUserResource  {
   bucket: Bucket
-  location: string
+  location?: string
   deleted?: boolean
   products?: IProduct[]
   source_demo?: boolean
@@ -113,14 +131,20 @@ export interface IBoard extends IBoardPopulated  {
 
 // BOARD_ITEMS
 
-export interface IBoardItemBase extends ISupabaseUserResource {
-  product_id?: ApiID 
-  board_id: ApiID
-  pos_x: number
-  pos_y: number
+export interface IBoardItemPosition {
   rotate_z: number
   scale: number
+  pos_x: number
+  pos_y: number
+}
+
+export interface IBoardItemBase extends ISupabaseUserResource, IBoardItemPosition {
+  product_id?: ApiID 
+  board_id: ApiID
   zIndex?: number
+  use_perc: boolean
+  perc_x: number
+  perc_y: number
   source_demo?: boolean
 }
 
@@ -130,7 +154,7 @@ export interface IBoardItem extends IBoardItemBase {
 
 // WEBPAGES
 
-export interface IWebPageBase extends ISupabaseUserResource {
+export interface IWebPageBase extends Omit<ISupabaseUserResource, 'updated_by'|'updated_in_channel'>  {
   url: URL
   homepage: URL
   display_url: URL
@@ -153,6 +177,36 @@ export interface IIWebPageBaseHistory {
 export interface IWebPagePopulated extends IWebPageBase {}
 
 export interface IWebPage extends IWebPagePopulated {}
+
+// CONTENT
+
+export interface IContentBase extends ISupabaseResource {
+  title: string
+  description: string
+  source: string
+  author: string
+  topic: string
+  url: string
+  image_url: string
+  published_date: Date
+}
+
+export interface IContentPopulated extends IContentBase {}
+
+export interface IContent extends IContentPopulated {}
+
+// USER CONTENT
+
+export interface IUserContentBase extends ISupabaseUserResource {
+  content_id: ApiID
+  viewed?: Date
+}
+
+export interface IUserContentPopulated extends IUserContentBase {
+  content: IContentBase
+}
+
+export interface IUserContent extends IUserContentPopulated {}
 
 // OTHER
 
@@ -181,10 +235,10 @@ export interface IProductCategory extends IDefault {
   regexString: RegExp
 }
 
-export enum AUTH_TYPE {
+export enum USER_TYPE {
   USER = 'user',
   GUEST = 'guest',
-  CONVERTED_GUEST = 'converted-guest'
+  // CONVERTED_GUEST = 'converted-guest'
 }
 
 export enum AUTH_ACTION {

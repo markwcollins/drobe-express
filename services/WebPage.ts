@@ -1,6 +1,6 @@
 import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
-import { ApiID, IWebPage, IIWebPageBaseHistory, SupabaseTables } from '../types'
+import { ApiID, IWebPage, IIWebPageBaseHistory, SupabaseTables } from '../types/supabase-types'
 
 export default class WebPage {
   id: ApiID

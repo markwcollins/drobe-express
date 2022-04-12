@@ -1,7 +1,7 @@
 import fastq from 'fastq'
 import WebPage from '../services/WebPage'
 import Product from '../services/Product'
-import { IProduct } from '../types'
+import { IProduct } from '../types/supabase-types'
 
 interface IupdateWebPagesProps {
   from: number

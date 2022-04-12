@@ -29,6 +29,9 @@ router.post('/open-graph', openGraph)
 import convertGuestToUser from './routes/convertGuestToUser'
 router.post('/convert-guest-to-user', convertGuestToUser)
 
+import trackEvent from './routes/trackEvent'
+router.post('/track-event', trackEvent)
+
 app.use('/api/v2', router)
 
 import { initCrons } from './crons'

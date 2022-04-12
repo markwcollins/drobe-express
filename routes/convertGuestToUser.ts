@@ -1,7 +1,14 @@
 import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/validateSupabaseJwt'
 import { User, Session } from '@supabase/supabase-js'
-import { AUTH_TYPE, SupabaseTables } from '../types'
+import { USER_TYPE, SupabaseTables } from '../types/supabase-types'
 import { supabase } from '../services/supabase'
+
+/*
+  body: {
+    email: string,
+    password: string,
+  }
+*/
 
 const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, accessToken: oldAccessToken }) => {
   const { email, password } = req.body
@@ -17,7 +24,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, acc
   const { data, error: getNewUserError } = await supabase.auth.api.signUpWithEmail(
     email,
     password,
-    { data: { user: AUTH_TYPE.USER, profile_id: oldUser.user_metadata.profile_id }}
+    { data: { user: USER_TYPE.USER, profile_id: oldUser.user_metadata.profile_id }}
     // `profile_id` is needed to link resources back to the user for reporting
     // resources all have `user_id` but this links to the `auth.users` table, which can't be linked to other tables `boards`
     // by keeping the `profile_id` with the user we can add both the `user_id` and `profile_id` to tables so we can 
@@ -34,7 +41,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, acc
   const responses = await Promise.allSettled([
 
     // the profile is updated to the new user_id and email also updated
-    supabase.from(SupabaseTables.PROFILES).update({ user_id: newUserId, email, user_type: AUTH_TYPE.USER }).eq('user_id', oldUserId),
+    supabase.from(SupabaseTables.PROFILES).update({ user_id: newUserId, email, user_type: USER_TYPE.USER }).eq('user_id', oldUserId),
 
     // other resources only need the new user_id
     ...[ 

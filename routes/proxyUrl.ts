@@ -1,6 +1,12 @@
 import { Request, Response } from 'express'
 import axios from 'axios'
 
+/*
+  body: {
+    url: string
+  }
+*/
+
 const handler = async (req: Request, res: Response) => {
   const { url } = req.body
   if (!url) {

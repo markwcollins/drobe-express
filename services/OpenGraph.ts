@@ -1,6 +1,6 @@
 import CONFIG from '../config'
 import axios from 'axios'
-import { IOpenGraphFormattedData } from '../types'
+import { IOpenGraphFormattedData } from '../types/supabase-types'
 
 export default class OpenGraph {
   url: string

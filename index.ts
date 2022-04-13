@@ -31,11 +31,7 @@ router.post('/convert-guest-to-user', convertGuestToUser)
 
 import trackEvent from './routes/trackEvent'
 
-const corsOptions = {
-  origin: 'https://web.medleyapp.co/',
-  credentials: true
-}
-router.post('/track-event', cors(corsOptions), trackEvent)
+router.post('/track-event', trackEvent)
 
 app.use('/api/v2', router)
 

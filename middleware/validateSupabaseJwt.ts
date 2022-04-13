@@ -8,6 +8,10 @@ export const validateSupabaseJwt = (handler: ApiHandlerWithSupabaseJwt) => async
   const jwt = req.cookies['X-Supabase-Auth']
   console.log(req)
   console.log(req.headers)
+
+  const supabaseToken = req.get("X-Supabase-Auth");
+  console.log(supabaseToken)
+    
   if (!jwt) {
     return res.status(400).send('Supabase user token missing')
   }

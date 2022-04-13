@@ -39,10 +39,10 @@ export const createFacebookConversionEvent = ({ email, eventName, actionSource, 
   const eventRequest = (new EventRequest(FACEBOOK_ACCESS_TOKEN, FACEBOOK_PIXEL_ID)).setEvents(eventsData)
   eventRequest.execute().then(
     (response: any) => {
-      console.log('Response: ', response);
+      // console.log('Response: ', response);
     },
     (err: any) => {
-      console.error('Error: ', err);
+      // console.error('Error: ', err);
     }
   );
 }

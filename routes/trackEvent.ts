@@ -13,7 +13,6 @@ import { addUserToKlaviyoList } from '../services/Klaviyo'
 
 const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
   try {
-    console.log('trackEvent req', req.body, user)
     const email = user.email
     if (!email) {
       throw new Error('error retrieving user email')
@@ -39,6 +38,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
     const eventSourceUrl: string|undefined = req.body?.eventSourceUrl
     const userAgent = req.headers['user-agent']
 
+    console.log(eventName)
     if (eventName === EVENT_NAME.SignedUp) {
       addUserToKlaviyoList({ email })
     }

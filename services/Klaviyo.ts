@@ -10,15 +10,20 @@ interface IaddUserToKlaviyoList {
 
 // Rmi6sC is all list in Klavyivo
 export const addUserToKlaviyoList = async ({ email, listID = 'Rmi6sC' }: IaddUserToKlaviyoList) => {
+  console.log(email)
   const url = `https://a.klaviyo.com/api/v2/list/${listID}/subscribe?api_key=${KLAVYIVO_API_KEY}`
-  return axios.post(url, 
-    {
-      profiles: [ 
-        { email } 
-      ]
-    },
-    {
-      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
-    }
-  )
+  try {
+    return axios.post(url, 
+      {
+        profiles: [ 
+          { email } 
+        ]
+      },
+      {
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      }
+    )
+  } catch (e) {
+    console.log(e)
+  }
 }

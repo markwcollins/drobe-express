@@ -32,7 +32,7 @@ router.post('/convert-guest-to-user', convertGuestToUser)
 import trackEvent from './routes/trackEvent'
 
 var corsOptions = {
-  origin: 'https://web.medleyapp.co/',
+  origin: 'https://web.medleyapp.co',
   credentials: true
 };
 

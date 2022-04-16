@@ -48,7 +48,6 @@ app.use('/api/v2', router)
 app.use(sentry.Handlers.errorHandler());
 
 import { initCrons } from './crons'
-import { consoleError } from './services/ErrorHandling'
 initCrons()
 
 app.listen(PORT, () => {

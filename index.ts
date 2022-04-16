@@ -15,6 +15,7 @@ import cors from 'cors'
 app.use(cors())
 
 app.get('/', (req, res) => {
+  consoleError('loaded')
   res.send('ok')
 })
 
@@ -48,6 +49,7 @@ app.use('/api/v2', router)
 app.use(sentry.Handlers.errorHandler());
 
 import { initCrons } from './crons'
+import { consoleError } from './services/ErrorHandling'
 initCrons()
 
 app.listen(PORT, () => {

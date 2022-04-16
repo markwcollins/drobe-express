@@ -2,6 +2,7 @@ import fastq from 'fastq'
 import WebPage from '../services/WebPage'
 import Product from '../services/Product'
 import { IProduct } from '../types/supabase-types'
+import { consoleError } from '../services/ErrorHandling'
 
 interface IupdateWebPagesProps {
   from: number
@@ -19,7 +20,7 @@ export default class UpdateWebPagesCron {
   async init() {
     const { error, count } = await Product.api.select('*', { count: 'exact', head: true })
     if (!count || error) {
-      return console.error(count, error)
+      return consoleError(error, count)
     }
 
     for (let from = 0; from <= count; from += this.increment) {

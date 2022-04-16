@@ -2,6 +2,7 @@ import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/va
 import { createFacebookConversionEvent } from '../services/FacebookEvent'
 import { EVENT_NAME, ACTION_SOURCE, EventsForAPI } from '../types/events'
 import { addUserToKlaviyoList } from '../services/Klaviyo'
+import { consoleError } from '../services/ErrorHandling'
 
 /*
   body: {
@@ -23,7 +24,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
       throw new Error('eventName missing')
     }
   
-    if (!Object.values(EventsForAPI).includes(eventName)) {
+    if (!EventsForAPI.includes(eventName)) {
       throw new Error('unknown eventName')
     }
   
@@ -42,7 +43,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
 
     res.status(200).end()
   } catch (e) {
-    console.error(e)
+    consoleError(e, req)
     res.status(400).send(e)
   }
 }

@@ -2,6 +2,7 @@ import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/va
 import { User, Session } from '@supabase/supabase-js'
 import { USER_TYPE, SupabaseTables } from '../types/supabase-types'
 import { supabase } from '../services/supabase'
+import { consoleError } from '../services/ErrorHandling'
 
 /*
   body: {
@@ -13,11 +14,9 @@ import { supabase } from '../services/supabase'
 const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, accessToken: oldAccessToken }) => {
   const { email, password } = req.body
   if (!email) {
-    console.error('Email missing')
     return res.status(400).send('Email missing')
   }
   if (!password) {
-    console.error('Password missing')
     return res.status(400).send('Password missing')
   }
 
@@ -31,7 +30,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, acc
     // use the `user_id` for row based permmissions and querying and the `profile_id` for other tacking
   )
   if (getNewUserError || !data) {
-    console.error(getNewUserError)
+    consoleError(getNewUserError)
     return res.status(400).send(getNewUserError)
   }
 
@@ -61,7 +60,7 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, acc
 
   const errors = responses.some(promise => promise.status === 'rejected')
   if (errors) {
-    console.error(responses)
+    consoleError(responses)
   }
 
   res.status(200).end()

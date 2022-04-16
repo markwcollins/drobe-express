@@ -38,11 +38,6 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
     const eventSourceUrl: string|undefined = req.body?.eventSourceUrl
     const userAgent = req.headers['user-agent']
 
-    console.log(eventName)
-    if (eventName === EVENT_NAME.SignedUp) {
-      addUserToKlaviyoList({ email })
-    }
-
     createFacebookConversionEvent({ eventName, email, actionSource, userAgent, eventSourceUrl })
 
     res.status(200).end()

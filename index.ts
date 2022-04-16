@@ -15,7 +15,6 @@ import cors from 'cors'
 app.use(cors())
 
 app.get('/', (req, res) => {
-  consoleError('loaded')
   res.send('ok')
 })
 

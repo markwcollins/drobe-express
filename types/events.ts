@@ -1,7 +1,7 @@
 export enum EVENT_NAME {
   SignedUp = 'Signed Up',
   AppLoaded = 'App Loaded',
-  ChromeExtensionLoaded = 'Chrome Ext Loaded',
+  ChromeExtensionLoaded = 'Chrome Extension Loaded',
   ShopPageViewDetails = 'Shop - Page View Details',
   BoardEditorShareBoard = 'BoardEditor - Share Board',
   ShopSearchSearchGoogle = 'ShopSearch - Search Google',

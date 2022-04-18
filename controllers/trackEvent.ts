@@ -1,7 +1,6 @@
-import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/validateSupabaseJwt'
+import { Request, Response } from 'express'
 import { createFacebookConversionEvent } from '../services/FacebookEvent'
 import { EVENT_NAME, ACTION_SOURCE, EventsForAPI } from '../types/events'
-import { addUserToKlaviyoList } from '../services/Klaviyo'
 import { consoleError } from '../services/ErrorHandling'
 
 /*
@@ -12,9 +11,9 @@ import { consoleError } from '../services/ErrorHandling'
   }
 */
 
-const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
+const handler = async (req: Request, res: Response) => {
   try {
-    const email = user.email
+    const email = req.user?.email
     if (!email) {
       throw new Error('error retrieving user email')
     }
@@ -48,5 +47,5 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user }) => {
   }
 }
 
-export default validateSupabaseJwt(handler) 
+export default handler
 

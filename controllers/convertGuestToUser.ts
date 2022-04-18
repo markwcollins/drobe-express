@@ -1,4 +1,4 @@
-import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/validateSupabaseJwt'
+import { Request, Response, NextFunction } from 'express'
 import { User, Session } from '@supabase/supabase-js'
 import { USER_TYPE, SupabaseTables } from '../types/supabase-types'
 import { supabase } from '../services/supabase'
@@ -11,7 +11,14 @@ import { consoleError } from '../services/ErrorHandling'
   }
 */
 
-const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, accessToken: oldAccessToken }) => {
+const handler = async (req: Request, res: Response) => {
+
+  const oldUser = req.user
+  if (!oldUser) {
+    return res.status(400).send('User misssing missing')
+  }
+  const oldAccessToken = req.accessToken
+
   const { email, password } = req.body
   if (!email) {
     return res.status(400).send('Email missing')
@@ -66,4 +73,4 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res, { user: oldUser, acc
   res.status(200).end()
 }
 
-export default validateSupabaseJwt(handler) 
+export default handler

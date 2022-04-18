@@ -1,10 +1,21 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import { User } from '@supabase/supabase-js'
+import { initSentry } from './services/Sentry'
+import index from './routes'
+import userRoutes from './routes/user'
 
 const app = express()
 const PORT = 8000
 
-import { initSentry } from './services/Sentry'
+declare global{
+  namespace Express {
+      interface Request {
+          user?: User
+          accessToken: string
+      }
+  }
+}
 
 const sentry = initSentry(app)
 
@@ -22,27 +33,8 @@ app.get('/health', (req, res) => {
   res.send('ok')
 })
 
-const router = express.Router()
-
-import proxy from './routes/proxyUrl'
-router.post('/proxy-url', proxy)
-
-import openGraph from './routes/openGraph'
-router.post('/open-graph', openGraph)
-
-import convertGuestToUser from './routes/convertGuestToUser'
-router.post('/convert-guest-to-user', convertGuestToUser)
-
-import trackEvent from './routes/trackEvent'
-
-var corsOptions = {
-  origin: 'https://web.medleyapp.co',
-  credentials: true
-};
-
-router.post('/track-event', cors(corsOptions), trackEvent)
-
-app.use('/api/v2', router)
+app.use('/api/v2', index)
+app.use('/api/v2/user', userRoutes)
 
 // The error handler must be before any other error middleware and after all controllers
 app.use(sentry.Handlers.errorHandler());

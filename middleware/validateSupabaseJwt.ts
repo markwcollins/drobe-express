@@ -1,20 +1,24 @@
-import { Request, Response } from 'express'
-import { User } from '@supabase/supabase-js'
+import { Request, Response, NextFunction } from 'express'
 import { getUser } from '../services/supabase'
 
-export type ApiHandlerWithSupabaseJwt = (req: Request, res: Response, data: { user: User, accessToken: string }) => any
-
-export const validateSupabaseJwt = (handler: ApiHandlerWithSupabaseJwt) => async (req: Request, res: Response) => {
+const validateSupabaseJwt =  async (req: Request, res: Response, next: NextFunction) => {
   const jwt = req.get('X-Supabase-Auth')
     
   if (!jwt) {
     return res.status(400).send('Supabase user token missing')
   }
 
-  const { user, error } = await getUser(jwt) // getting the user validates the JWT
-  if (!user || error) {
-    return res.status(400).send('User not found')
+  try {
+    const { user, error } = await getUser(jwt) // getting the user validates the JWT
+    if (!user || error) {
+      throw new Error(error?.message)
+    }
+    req.user = user
+    req.accessToken = jwt
+    next()
+  } catch (error) {
+    res.status(400).send(error)
   }
-
-  return handler(req, res, { user, accessToken: jwt })
 }
+
+export default validateSupabaseJwt

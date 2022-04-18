@@ -1,4 +1,4 @@
-import { ApiHandlerWithSupabaseJwt, validateSupabaseJwt } from '../middleware/validateSupabaseJwt'
+import { Request, Response, NextFunction } from 'express'
 import OpenGraph from '../services/OpenGraph'
 
 /*
@@ -7,7 +7,7 @@ import OpenGraph from '../services/OpenGraph'
   }
 */
 
-const handler: ApiHandlerWithSupabaseJwt = async (req, res) => {
+const handler = async (req: Request, res: Response) => {
   const urls = req.body?.urls as string[] | undefined
   if (!urls || !urls.length) {
     return res.status(400).send('Urls missing')
@@ -25,4 +25,4 @@ const handler: ApiHandlerWithSupabaseJwt = async (req, res) => {
   }
 }
 
-export default validateSupabaseJwt(handler) 
+export default handler

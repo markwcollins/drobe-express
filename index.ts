@@ -1,7 +1,7 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import { User } from '@supabase/supabase-js'
-import { initSentry } from './services/Sentry'
+import ExpressSentry from './services/Sentry'
 import index from './routes'
 import userRoutes from './routes/user'
 
@@ -17,7 +17,8 @@ declare global{
   }
 }
 
-const sentry = initSentry(app)
+
+const sentry = new ExpressSentry(app)
 
 app.use(cookieParser())
 app.use(express.json())
@@ -37,7 +38,7 @@ app.use('/api/v2', index)
 app.use('/api/v2/user', userRoutes)
 
 // The error handler must be before any other error middleware and after all controllers
-app.use(sentry.Handlers.errorHandler());
+sentry.loadErrorHandler()
 
 import { initCrons } from './crons'
 initCrons()

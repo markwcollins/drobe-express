@@ -14,10 +14,11 @@ interface IcreateFacebookConversionApiEvent {
   eventName: EVENT_NAME
   actionSource: ACTION_SOURCE
   eventSourceUrl?: string
+  ipAddress: string
   userAgent?: string
 }
 
-export const createFacebookConversionEvent = ({ email, eventName, actionSource, eventSourceUrl, userAgent }: IcreateFacebookConversionApiEvent) => {
+export const createFacebookConversionEvent = ({ email, eventName, actionSource, eventSourceUrl, ipAddress, userAgent }: IcreateFacebookConversionApiEvent) => {
   const ServerEvent = facebookSdk.ServerEvent
   const EventRequest = facebookSdk.EventRequest
   const UserData = facebookSdk.UserData
@@ -26,17 +27,11 @@ export const createFacebookConversionEvent = ({ email, eventName, actionSource, 
 
   const userData = (new UserData())
     .setEmails([ hashedEmail ])
+    .setClientIpAddress(ipAddress)
     .setClientUserAgent(userAgent)
 
   let _eventName: string = eventName
-
-  if (eventName === EVENT_NAME.SignedUp) {
-    _eventName = 'CompleteRegistration'
-  }
-
-  if (eventName === EVENT_NAME.AddedToWishList) {
-    _eventName = 'CompleteRegistration'
-  }
+  _eventName = 'CompleteRegistration'
       
   const serverEvent = (new ServerEvent())
     .setEventName(_eventName)

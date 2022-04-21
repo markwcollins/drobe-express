@@ -22,6 +22,7 @@ const sentry = new ExpressSentry(app)
 
 app.use(cookieParser())
 app.use(express.json())
+app.set('trust proxy', true)
 
 import cors from 'cors'
 app.use(cors())

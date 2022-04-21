@@ -37,8 +37,9 @@ const handler = async (req: Request, res: Response) => {
   
     const eventSourceUrl: string|undefined = req.body?.eventSourceUrl
     const userAgent = req.headers['user-agent']
+    const ipAddress = req.ip || req.ips[0]
 
-    createFacebookConversionEvent({ eventName, email, actionSource, userAgent, eventSourceUrl })
+    createFacebookConversionEvent({ eventName, email, actionSource, userAgent, ipAddress, eventSourceUrl })
 
     res.status(200).end()
   } catch (e) {

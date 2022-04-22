@@ -29,12 +29,9 @@ export const createFacebookConversionEvent = ({ email, eventName, actionSource, 
     .setEmails([ hashedEmail ])
     .setClientIpAddress(ipAddress)
     .setClientUserAgent(userAgent)
-
-  let _eventName: string = eventName
-  _eventName = 'CompleteRegistration'
       
   const serverEvent = (new ServerEvent())
-    .setEventName(_eventName)
+    .setEventName(eventName)
     .setEventTime(currentTimestamp)
     // .setCu custom_event_type
     .setUserData(userData)

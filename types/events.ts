@@ -29,5 +29,6 @@ export const EventsForAppsFlyer = [
 // these are required by facebook
 export enum ACTION_SOURCE { 
   WEBSITE = 'website',
-  APP = 'app'
+  APP = 'app',
+  // OTHER = 'other'
 }

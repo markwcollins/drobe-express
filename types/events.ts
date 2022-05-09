@@ -30,5 +30,5 @@ export const EventsForAppsFlyer = [
 export enum ACTION_SOURCE { 
   WEBSITE = 'website',
   APP = 'app',
-  // OTHER = 'other'
+  OTHER = 'other'
 }

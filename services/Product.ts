@@ -30,6 +30,7 @@ export default class Product {
     const { data, error } = await Product.select().eq('id', this.id)
     if (data) {
       this.data = data[0]
+      this.id = this.data.id
     }
     return this.data
   }
@@ -38,6 +39,7 @@ export default class Product {
     const { data: resData, error } = await Product.api.update(data).eq('id', this.id)
     if (resData) {
       this.data = resData[0]
+      this.id = this.data.id
     }
     return this.data
   }

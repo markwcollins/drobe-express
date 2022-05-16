@@ -1,4 +1,6 @@
 import { PostgrestError } from '@supabase/supabase-js'
+import { Country } from 'constants/Countries'
+import { UserInterest } from 'constants/UserInterests'
 
 export type ApiID = string
 export type UUID = string
@@ -20,7 +22,11 @@ export enum SupabaseTables {
   SHOPS = 'shops',
   PROFILES = 'profiles',
   CONTENTS = 'contents',
-  USER_CONTENTS = 'contents',
+  USER_CONTENTS = 'user_contents',
+  TAGS = 'tags',
+  BOARD_TAGS = 'board_tags',
+  PRODUCT_TAGS = 'product_tags',
+  FX_RATES = 'fx_rates',
 }
 
 export enum Folder {
@@ -33,7 +39,8 @@ export enum UserAction {
   ONBOARDED_APP = 'onboarded',
   SHOP_SCREENSHOT = 'shop_screenshot',
   LOADED_DEMO_DATA = 'loaded_demo_data',
-  REMOVED_DEMO_DATA  = 'removed_demo_data', 
+  REMOVED_DEMO_DATA  = 'removed_demo_data',
+  INVITED_FRIENDS = 'invited_friends'
 }
 
 export type IUserAction = {
@@ -61,12 +68,18 @@ export interface ISupabaseUpdateResource {
   updated_in_channel?: CHANNELS,
 }
 
+
 export interface ISupabaseResource extends IDefault, ISupabaseUpdateResource {
   inserted_at?: Date
   updated_at?: Date
 }
 
-export interface IProfile extends ISupabaseResource {
+export interface IIdentitfyExtraData {
+  country?: Country
+  interests?: UserInterest[]
+}
+
+export interface IProfile extends ISupabaseResource, IIdentitfyExtraData {
   user_id: ApiID
   email: string
   first_name: string
@@ -74,6 +87,9 @@ export interface IProfile extends ISupabaseResource {
   user_type: USER_TYPE
   sign_up_channel?: CHANNELS
   completed_actions?: IUserAction
+  allow_unlimited_products: boolean
+  max_products_allowed?: number // undefined is unlimited
+  currency?: Currency
 }
 
 export interface ISupabaseUserResource extends ISupabaseResource {
@@ -102,6 +118,7 @@ export interface IProductBase extends ISupabaseUserResource {
 
 export interface IProductPopulated extends IProductBase {
   webPage?: IWebPage
+  tags?: IProductTag[]
 }
 
 export interface IProduct extends Omit<IProductPopulated, 'price'> {
@@ -123,6 +140,7 @@ export interface IBoardBase extends ISupabaseUserResource  {
 
 export interface IBoardPopulated extends IBoardBase  {
   boardItems?: IBoardItem[] 
+  tags?: IBoardTag[]
 }
 
 export interface IBoard extends IBoardPopulated  {
@@ -171,12 +189,49 @@ export interface IWebPageBase extends Omit<ISupabaseUserResource, 'updated_by'|'
 }
 
 export interface IIWebPageBaseHistory {
-  data?: Array<{ timestamp?: number, price?: string }>
+  data?: Array<{ timestamp?: number, price?: string, currency?: string }>
 }
 
 export interface IWebPagePopulated extends IWebPageBase {}
 
 export interface IWebPage extends IWebPagePopulated {}
+
+
+// TAGS
+
+export interface ITagBase extends Omit<ISupabaseUserResource, 'updated_by'|'updated_in_channel'> {
+  name?: string
+}
+
+export interface ITagPopulated extends ITagBase {}
+
+export interface ITag extends ITagPopulated {}
+
+// BOARD_TAGS
+
+export interface IBoardTagBase extends Omit<ISupabaseUserResource, 'updated_by'|'updated_in_channel'> {
+  board_id: ApiID
+  tag_id: ApiID
+}
+
+export interface IBoardTagPopulated extends IBoardTagBase {
+  tag: ITag
+}
+
+export interface IBoardTag extends IBoardTagPopulated {}
+
+// PRODUCT_TAGS
+
+export interface IProductTagBase extends Omit<ISupabaseUserResource, 'updated_by'|'updated_in_channel'> {
+  product_id: ApiID
+  tag_id: ApiID
+}
+
+export interface IProductTagPopulated extends IProductTagBase {
+  tag: ITag
+}
+
+export interface IProductTag extends IProductTagPopulated {}
 
 // CONTENT
 
@@ -217,6 +272,8 @@ export interface IShop extends ISupabaseResource {
   featured: boolean
   bucket: Bucket
   location: string
+  country?: Country
+  interests?: UserInterest[]
 }
 
 export interface IImage {
@@ -257,3 +314,31 @@ export interface IOpenGraphFormattedData {
   price?: string, 
   currency?: string 
 } 
+
+// CURRENCIES
+
+export const currencies = ['AUD','USD','GBP','NZD','CAD','EUR']
+export type Currency = typeof currencies[number]
+
+// FX_RATES
+
+
+export interface IFXRate  {
+  from_currency: string
+  updated_at: Date
+  to_currency: {
+    [key: Currency]: number
+  }
+}
+
+
+export const CountryToCurrencyMapping = new Map<Country, Currency>([
+  ['au', 'AUD'],
+  ['us', 'USD'],
+  ['ca', 'CAD'],
+  ['nz', 'NZD'],
+  ['gb', 'GBP']
+])
+
+export const DefaultCurrency = 'USD'
+

@@ -1,16 +1,29 @@
 
 import UpdateWebPagesCron from './UpdateWebPagesCron'
+import UpdateFXRatesCron from './UpdateFXRatesCron'
 import schedule from 'node-schedule'
 
-const rule = new schedule.RecurrenceRule()
-rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6] // every 2nd day
-rule.hour = 20 // utc time
-rule.minute = 45
-
 export const initCrons = () => {
-  schedule.scheduleJob(rule, function() {
-    console.log('starting crons')
+
+  const updateWebPagesCronRule = new schedule.RecurrenceRule()
+  updateWebPagesCronRule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6] // every day
+  updateWebPagesCronRule.hour = 20 // utc time
+  updateWebPagesCronRule.minute = 45
+  
+  schedule.scheduleJob(updateWebPagesCronRule, function() {
     const updateWebPagesCron = new UpdateWebPagesCron()
-    updateWebPagesCron.init()
+    console.log('starting UpdateWebPagesCron')
+    updateWebPagesCron.run()
+  })
+
+  const updateFXRatesCronRule = new schedule.RecurrenceRule()
+  updateFXRatesCronRule.dayOfWeek = [1, 2, 3, 4, 5] // every weekday
+  updateFXRatesCronRule.hour = 12 // utc time
+  updateFXRatesCronRule.minute = 0
+
+  schedule.scheduleJob(updateFXRatesCronRule, function() {
+    console.log('starting UpdateWebPagesCron')
+    const updateFXRatesCron = new UpdateFXRatesCron()
+    updateFXRatesCron.run()
   })
 }

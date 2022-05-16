@@ -22,6 +22,7 @@ export default class WebPage {
     const { data, error } = await WebPage.api.select().eq('id', this.id)
     if (data) {
       this.data = data[0]
+      this.id = this.data.id
     }
     return this.data
   }
@@ -30,6 +31,7 @@ export default class WebPage {
     const { data: resData } = await supabase.from<IWebPage>(SupabaseTables.WEB_PAGES).update(data).eq('id', this.id)
     if (resData) {
       this.data = resData[0]
+      this.id = this.data.id
     }
     return this.data
   }

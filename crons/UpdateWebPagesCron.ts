@@ -17,7 +17,8 @@ export default class UpdateWebPagesCron {
     this.queue = fastq.promise(this.updateWebPages, 1)
   }
 
-  async init() {
+  async run() {
+    // only to get count of all products,
     const { error, count } = await Product.api.select('*', { count: 'exact', head: true })
     if (!count || error) {
       return consoleError(error, count)

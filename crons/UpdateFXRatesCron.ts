@@ -13,15 +13,14 @@ export default class UpdateFXRatesCron  {
 
   async run() {
     this.currencies.map(async currency => {
-      const url = await ExchangeRatesAPI.getLatest(currency, currencies)
-      UpdateFXRatesCron.updateFXRates(url.data)
+      const res = await ExchangeRatesAPI.getLatest(currency, currencies)
+      UpdateFXRatesCron.updateFXRates(res.data)
     })
   }
 
  static async updateFXRates(data: IExchangeRatesAPILatestResponse) {
     return await supabase.from(SupabaseTables.FX_RATES).upsert({
       from_currency: data.base,
-      update_at: data.date,
       to_currency: data.rates
     })
   }

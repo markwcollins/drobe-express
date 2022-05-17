@@ -1,6 +1,4 @@
 import { PostgrestError } from '@supabase/supabase-js'
-import { Country } from 'constants/Countries'
-import { UserInterest } from 'constants/UserInterests'
 
 export type ApiID = string
 export type UUID = string
@@ -320,8 +318,32 @@ export interface IOpenGraphFormattedData {
 export const currencies = ['AUD','USD','GBP','NZD','CAD','EUR']
 export type Currency = typeof currencies[number]
 
-// FX_RATES
+// COUNTRIES
 
+export interface ICountry {
+  id: string
+  name: string
+}
+
+export interface ICountryUi extends ICountry {
+  isActive: boolean
+}
+
+export const COUNTRIES: ICountry[] = [
+  { id: 'au', name: 'Australia'},
+  { id: 'us', name: 'United States'},
+  { id: 'gb', name: 'United Kingdom'},
+  { id: 'ca', name: 'Canada'},
+  { id: 'nz', name: 'New Zealand'},
+  { id: 'other', name: 'Other'}
+]
+
+export type Country = typeof COUNTRIES[number]['name']
+export type CountryID = typeof COUNTRIES[number]['id']
+
+export const COUNTRIES_OBJ: {[key: CountryID]: ICountry}  = COUNTRIES.reduce((obj, country) => ({ ...obj, [country.id]: country }), {})
+
+// FX_RATES
 
 export interface IFXRate  {
   from_currency: string
@@ -342,3 +364,30 @@ export const CountryToCurrencyMapping = new Map<Country, Currency>([
 
 export const DefaultCurrency = 'USD'
 
+// USER INTERESTS
+
+export interface IUserInterest {
+  id: string
+  name: string
+}
+
+export interface IUserInterestUi extends IUserInterest {
+  isActive: boolean
+}
+
+export const USER_INTERESTS: IUserInterest[] = [
+  { id: 'womens-fashion-1', name: 'Women\'s Fashion' },
+  { id: 'mens-fashion-1', name: 'Men\'s fashion' },
+  { id: 'furniture-1', name: 'Furniture' },
+  { id: 'home-decor-1', name: 'Home decor' },
+  { id: 'art-1', name: 'Art' },
+  { id: 'weddings-1', name: 'Weddings' },
+  { id: 'kids-fashion-1', name: 'Kid\'s fashion' },
+  { id: 'birthdays-1', name: 'Birthdays' },
+  { id: 'other-1', name: 'Other' }
+]
+
+export type UserInterest = typeof USER_INTERESTS[number]['name']
+export type UserInterestID = typeof USER_INTERESTS[number]['id']
+
+export const USER_INTERESTS_OBJ: {[key: UserInterestID]: IUserInterest} = USER_INTERESTS.reduce((obj, interest) => ({ ...obj, [interest.id]: interest }), {})

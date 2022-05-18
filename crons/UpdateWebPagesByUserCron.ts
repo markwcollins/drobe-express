@@ -8,8 +8,8 @@ import { EVENT_NAME } from '../types/events'
 import { supabase } from '../services/supabase'
 
 interface IuserQueue {
-  from: number
-  to: number
+  profileFrom: number
+  profileTo: number
 }
 
 interface IwebPagesQueue {
@@ -34,17 +34,17 @@ export default class UpdateWebPagesCron {
       return consoleError(error, count)
     }
 
-    for (let from = 0; from <= count; from += this.increment) {
-      await this.userQueue.push({ from, to: from + this.increment })
+    for (let profileFrom = 0; profileFrom <= count; profileFrom += this.increment) {
+      await this.userQueue.push({ profileFrom, profileTo: profileFrom + this.increment })
     }
   }
 
-  async addWebPagesToQueue({ from, to }: IuserQueue) {
+  async addWebPagesToQueue({ profileFrom, profileTo }: IuserQueue) {
     let profile: IProfile|undefined
     let products: IProductPopulated[]|undefined
 
     try {
-      const { data: profileData, error: profileError } =  await supabase.from<IProfile>(SupabaseTables.PROFILES).select().range(from, from)
+      const { data: profileData, error: profileError } =  await supabase.from<IProfile>(SupabaseTables.PROFILES).select().range(profileFrom, profileFrom)
       if (profileError) {
         throw profileError
       }

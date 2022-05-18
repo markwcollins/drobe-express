@@ -26,6 +26,9 @@ export default class FXRate {
       from_currency: currency,
       ..._data
     })
+    if (error) {
+      console.log(error)
+    }
   } 
 
   static async conversionRate({ from_currency, to_currency }: { from_currency?: string, to_currency: string }) {

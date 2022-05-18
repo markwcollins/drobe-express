@@ -7,7 +7,11 @@ export enum EVENT_NAME {
   ShopSearchSearchGoogle = 'ShopSearch - Search Google',
   AddedToWishList = 'Added To Wish List',
   CreatedBoard = 'Created Board',
-  ClickedProductSourceLink = 'Clicked Product Source Link'
+  ClickedProductSourceLink = 'Clicked Product Source Link',
+  InvitedFriendsOpened = 'Invited Friends Opened',
+  InvitedFriendsCancelled = 'Invited Friends Cancelled',
+  InvitedFriendsSuccess = 'Invited Friends Success',
+  PriceChanged = 'Price Changed'
 }
 
 export const EventsForAPI = [
@@ -29,6 +33,6 @@ export const EventsForAppsFlyer = [
 // these are required by facebook
 export enum ACTION_SOURCE { 
   WEBSITE = 'website',
-  APP = 'app',
+  // APP = 'app',
   OTHER = 'other'
 }

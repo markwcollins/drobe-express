@@ -3,7 +3,7 @@ dotenv.config()
 
 const CONFIG = {
   NODE_ENV: process.env.NODE_ENV || 'production',
-  IS_DEV: process.env.NODE_ENV ===  'development',
+  IS_DEV: process.env.NODE_ENV === 'development',
   SUPABASE_URL: process.env.SUPABASE_URL!,
   SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY!,
   SUPABASE_SERVICE_ROLE: process.env.SUPABASE_SERVICE_ROLE!,
@@ -11,6 +11,7 @@ const CONFIG = {
   FACEBOOK_ACCESS_TOKEN: process.env.FACEBOOK_ACCESS_TOKEN!,
   FACEBOOK_PIXEL_ID: process.env.FACEBOOK_PIXEL_ID!,
   KLAVYIVO_API_KEY: process.env.KLAVYIVO_API_KEY!,
+  SEGMENT_WRITE_KEY: process.env.SEGMENT_WRITE_KEY!
 };
 
 export default CONFIG

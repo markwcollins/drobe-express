@@ -22,7 +22,10 @@ export default class Product {
     return Product.api.select()
   }
 
-  static selectAndPopulate() {
+  static selectAndPopulate(data?: { userId?: string }) {
+    if (data?.userId) {
+      return supabase.from<IProductPopulated>(SupabaseTables.PRODUCTS).select(Product.populateQuery).eq('user_id', data.userId)
+    }
     return supabase.from<IProductPopulated>(SupabaseTables.PRODUCTS).select(Product.populateQuery)
   }
 

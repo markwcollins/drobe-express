@@ -1,8 +1,8 @@
 
 
-import { supabase } from '../services/supabase'
-import { Currency, currencies, SupabaseTables } from '../types/supabase-types'
-import ExchangeRatesAPI, { IExchangeRatesAPILatestResponse } from '../services/ExchangeRatesApi'
+import { Currency, currencies } from '../types/supabase-types'
+import ExchangeRatesAPI from '../services/ExchangeRatesApi'
+import FXRate from '../services/FXRate'
 
 export default class UpdateFXRatesCron  {
   currencies: Currency[]
@@ -12,16 +12,12 @@ export default class UpdateFXRatesCron  {
   }
 
   async run() {
-    this.currencies.map(async currency => {
-      const res = await ExchangeRatesAPI.getLatest(currency, currencies)
-      UpdateFXRatesCron.updateFXRates(res.data)
-    })
-  }
-
- static async updateFXRates(data: IExchangeRatesAPILatestResponse) {
-    return await supabase.from(SupabaseTables.FX_RATES).upsert({
-      from_currency: data.base,
-      to_currency: data.rates
+    this.currencies.map(async from_currency => {
+      const res = await ExchangeRatesAPI.getLatest(from_currency, currencies)
+      FXRate.upsert(from_currency, {
+        to_currencies: res.data.rates, 
+        updated_at: res.data.date
+      })
     })
   }
 }

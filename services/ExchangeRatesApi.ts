@@ -12,7 +12,6 @@ export default class ExchangeRatesAPI {
 
   static async getLatest(base: Currency, symbols: Currency[]) {
     const url = ExchangeRatesAPI.createGetLatestUrl(base, symbols)
-
     return await axios.get<IExchangeRatesAPILatestResponse>(url, {
       headers: {
         'apiKey': ExchangeRatesAPI.apiKey

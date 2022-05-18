@@ -1,91 +1,120 @@
 import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
-import { ApiID, IWebPage, IIWebPageBaseHistory, SupabaseTables } from '../types/supabase-types'
+import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase } from '../types/supabase-types'
+import FXRate from './FXRate'
 
 export default class WebPage {
-  id: ApiID
-  data: IWebPage
-  openGraphData?: OpenGraph
-  static api = supabase.from<IWebPage>(SupabaseTables.WEB_PAGES)
+  data?: Partial<IWebPage>
+  static api = supabase.from<IWebPageBase>(SupabaseTables.WEB_PAGES)
 
-  constructor(data: IWebPage) {
+  constructor(data?: Partial<IWebPage>) {
     this.data = data
-    this.id = this.data.id
-    this.openGraphData = undefined
   }
 
   get isValid() {
-    return this.data.price && this.data.page_found
+    return this.data?.id && this.data.price && this.data?.page_found
+  }
+
+  static isValid(webPage: IWebPage) {
+    return webPage.price && webPage.page_found
   }
 
   async get() {
-    const { data, error } = await WebPage.api.select().eq('id', this.id)
-    if (data) {
-      this.data = data[0]
-      this.id = this.data.id
+    if (!this.data?.id) {
+      throw new Error('id missing')
     }
-    return this.data
+    this.data = await WebPage.get(this.data.id)
   }
 
-  async update(data:Partial<IWebPage>) {
-    const { data: resData } = await supabase.from<IWebPage>(SupabaseTables.WEB_PAGES).update(data).eq('id', this.id)
-    if (resData) {
-      this.data = resData[0]
-      this.id = this.data.id
-    }
-    return this.data
+  static async get(id: string):Promise<IWebPageBase|undefined> {
+    const { data, error } = await WebPage.api.select().eq('id', id)
+    return data?.[0]
   }
 
-  async extractOpenGraphData() {
-    if (!this.data?.url) {
-      await this.get()
+  async update(_data: Partial<IWebPage>) {
+    if (!this.data?.id) {
+      throw new Error('id missing')
     }
-    if (this.data?.url) {
-      this.openGraphData = new OpenGraph(this.data.url)
-      await this.openGraphData.init()
-    }
+    this.data = await WebPage.update(this.data.id, _data)
+  }
 
-    // if we didnt get a response then we set the page as not found so we dont rescan the page
-    if (!this.openGraphData?.isValid) {
-      this.update({ page_found: false })
-    }
+  static async update(id:string, _data:Partial<IWebPage>):Promise<IWebPage|undefined>  {
+    const { data, error } = await WebPage.api.update(_data).eq('id', id)
+    return data?.[0]
+  }
 
-    return this.openGraphData?.data
+  static async extractOpenGraphData(url: string) {
+    const openGraphData = new OpenGraph(url)
+    await openGraphData.init()
+    return openGraphData?.data
   }
   
-  async updateOpenGraphData() {
-    const ogData = await this.extractOpenGraphData()
-    const newPrice = ogData?.price
-    if (!newPrice) return
+  static async updateOpenGraphData({ webPage, profile }: { webPage: IWebPage, profile?: IProfile}) {
+    let hasPriceChanged = false
+    const mostRecentOgData = await WebPage.extractOpenGraphData(webPage.url)
+    const newOgPrice = mostRecentOgData?.price
+    const oldOgPrice = webPage.og_price
+    let newWebPage: IWebPage|undefined
 
-    const oldPrice = this.data.price
-    if (!oldPrice) return
-
-    if (newPrice !== oldPrice) { // only update if the price is different
+    if (newOgPrice && oldOgPrice && newOgPrice !== oldOgPrice) { // only update if the price is different
+      hasPriceChanged = true
+      
       // default history if it doesn't exist yet
-      const oldHistory = this.data.history || WebPage.createHistory({ timestamp: new Date(this.data.inserted_at!).getTime(), price: oldPrice })
+      const oldHistory = webPage.history || WebPage.createHistory({ 
+        timestamp: new Date(webPage.inserted_at!).getTime(), 
+        price: webPage.price ,
+        currency: webPage.currency,
+        og_price: webPage.og_price,
+        og_currency: webPage.og_currency,
+      })
         
+      const userPreferredCurrency = profile?.currency
+      const newOgCurrency = mostRecentOgData.currency
+
+      let price = newOgPrice
+      if (userPreferredCurrency) {
+        price = await FXRate.convert({ 
+          amount: newOgPrice, 
+          from_currency: newOgCurrency, 
+          to_currency: userPreferredCurrency
+        }) || newOgPrice
+      } 
+
+      const updateData = {
+        price, 
+        currency: userPreferredCurrency || newOgCurrency,
+        og_price: newOgPrice,
+        og_currency: newOgCurrency,
+      }
       // update price to new price and add history
-      await this.update({ 
-        price: newPrice, 
-        history: WebPage.createHistory({ timestamp: Date.now(), price: newPrice, history: oldHistory })  
+      newWebPage = await WebPage.update(webPage.id, { 
+        ...updateData,
+        history: WebPage.createHistory({ 
+          timestamp: Date.now(), 
+          ...updateData,
+          history: oldHistory
+        })  
       })
     }
+
+    return { hasPriceChanged, webPage: newWebPage }
   }
   
 
-  static createHistory({ timestamp = Date.now(), price, history }: IcreateHistory ): IIWebPageBaseHistory {
+  static createHistory({ timestamp = Date.now(), price, history, currency }: IcreateHistory ): IIWebPageBaseHistory {
     return {
       data: [
         ...history?.data || [],
-        { timestamp, price }
+        { 
+          timestamp, 
+          price, 
+          currency 
+        }
       ]
     }
   }
 }
 
-interface IcreateHistory {
-  timestamp: number,
-  price: string
+interface IcreateHistory extends IIWebPageBaseHistoryResult {
   history?: IIWebPageBaseHistory 
 }

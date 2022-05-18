@@ -181,13 +181,23 @@ export interface IWebPageBase extends Omit<ISupabaseUserResource, 'updated_by'|'
   saved?: boolean
   price?: string
   currency?: string
+  og_price?: string
+  og_currency?: string
   updated_at?: Date
   history?: IIWebPageBaseHistory
   page_found?: boolean
 }
 
+export interface IIWebPageBaseHistoryResult { 
+  timestamp?: number, 
+  price?: string, 
+  currency?: string 
+  og_price?: string
+  og_currency?: string
+}
+
 export interface IIWebPageBaseHistory {
-  data?: Array<{ timestamp?: number, price?: string, currency?: string }>
+  data?: IIWebPageBaseHistoryResult[]
 }
 
 export interface IWebPagePopulated extends IWebPageBase {}
@@ -315,7 +325,7 @@ export interface IOpenGraphFormattedData {
 
 // CURRENCIES
 
-export const currencies = ['AUD','USD','GBP','NZD','CAD','EUR']
+export const currencies = ['AUD','USD','GBP','NZD','CAD','EUR','SGD','HKD','NOK']
 export type Currency = typeof currencies[number]
 
 // COUNTRIES
@@ -348,18 +358,24 @@ export const COUNTRIES_OBJ: {[key: CountryID]: ICountry}  = COUNTRIES.reduce((ob
 export interface IFXRate  {
   from_currency: string
   updated_at: Date
-  to_currency: {
+  to_currencies: {
     [key: Currency]: number
   }
 }
 
+export interface ICreateFXRate extends Omit<IFXRate, 'updated_at'>  {
+  from_currency: string
+  to_currencies: {
+    [key: Currency]: number
+  }
+}
 
 export const CountryToCurrencyMapping = new Map<Country, Currency>([
   ['au', 'AUD'],
   ['us', 'USD'],
   ['ca', 'CAD'],
   ['nz', 'NZD'],
-  ['gb', 'GBP']
+  ['gb', 'GBP'],
 ])
 
 export const DefaultCurrency = 'USD'
@@ -375,6 +391,17 @@ export interface IUserInterestUi extends IUserInterest {
   isActive: boolean
 }
 
+export interface IUserInterest {
+  id: string
+  name: string
+}
+
+export interface IUserInterestUi extends IUserInterest {
+  isActive: boolean
+}
+
+export const USER_INTEREST_WHEN_UNKNOWN =  { id: 'unknown', name: 'Featured' }
+
 export const USER_INTERESTS: IUserInterest[] = [
   { id: 'womens-fashion-1', name: 'Women\'s Fashion' },
   { id: 'mens-fashion-1', name: 'Men\'s fashion' },
@@ -384,7 +411,7 @@ export const USER_INTERESTS: IUserInterest[] = [
   { id: 'weddings-1', name: 'Weddings' },
   { id: 'kids-fashion-1', name: 'Kid\'s fashion' },
   { id: 'birthdays-1', name: 'Birthdays' },
-  { id: 'other-1', name: 'Other' }
+  USER_INTEREST_WHEN_UNKNOWN
 ]
 
 export type UserInterest = typeof USER_INTERESTS[number]['name']

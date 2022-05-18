@@ -41,14 +41,14 @@ export default class UpdateWebPagesCron {
       if (profileError) {
         throw profileError
       }
-      if (!profileData) return
+      if (!profileData) return false
       profile = profileData[0] as IProfile
 
       const { data: productsData, error: productsError } = await Product.selectAndPopulate({ userId: profile.user_id })
       if (productsError) {
         throw productsError
       }
-      if (!productsData || !productsData.length) return
+      if (!productsData || !productsData.length) return false
       products = productsData as IProductPopulated[]
     } catch (e) {
       consoleError(e)

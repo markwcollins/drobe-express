@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Currency } from '../types/supabase-types'
+import { consoleError } from './ErrorHandling'
 
 export default class ExchangeRatesAPI {
   static apiKey = 'bg7DpspGjhzFaIOV7KZlglNPZjuvdEQ3'
@@ -12,7 +13,7 @@ export default class ExchangeRatesAPI {
 
   static async getLatest(base: Currency, symbols: Currency[]) {
     const url = ExchangeRatesAPI.createGetLatestUrl(base, symbols)
-    return await axios.get<IExchangeRatesAPILatestResponse>(url, {
+    return axios.get<IExchangeRatesAPILatestResponse>(url, {
       headers: {
         'apiKey': ExchangeRatesAPI.apiKey
       }

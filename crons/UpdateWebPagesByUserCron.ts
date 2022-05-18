@@ -35,11 +35,11 @@ export default class UpdateWebPagesCron {
     }
 
     for (let profileFrom = 0; profileFrom <= count; profileFrom += this.increment) {
-      await this.userQueue.push({ profileFrom, profileTo: profileFrom + this.increment })
+      await this.userQueue.push({ profileFrom, profileTo: profileFrom + this.increment})
     }
   }
 
-  async addWebPagesToQueue({ profileFrom, profileTo }: IuserQueue) {
+  addWebPagesToQueue = async ({ profileFrom, profileTo }: IuserQueue) => {
     let profile: IProfile|undefined
     let products: IProductPopulated[]|undefined
 
@@ -48,14 +48,14 @@ export default class UpdateWebPagesCron {
       if (profileError) {
         throw profileError
       }
-      if (!profileData) return false
+      if (!profileData?.length) return false
       profile = profileData[0] as IProfile
 
       const { data: productsData, error: productsError } = await Product.selectAndPopulate({ userId: profile.user_id })
       if (productsError) {
         throw productsError
       }
-      if (!productsData || !productsData.length) return false
+      if (!productsData?.length) return false
       products = productsData as IProductPopulated[]
     } catch (e) {
       consoleError(e)
@@ -63,14 +63,14 @@ export default class UpdateWebPagesCron {
     }
     
     if (!products) return false
-
-    products.forEach(product => {
+    products.forEach(function(product){
       if (!profile) return false
+      /* @ts-ignore */
       this.webPageQueue.push({ profile, product })
-    })
+    }, this)
   }
 
-  async updateWebPages({ product, profile }: IwebPagesQueue) {
+  updateWebPages = async ({ product, profile }: IwebPagesQueue) => {
     try {
       if (!product.webPage) {
         throw new Error('productData.webPage is missing')

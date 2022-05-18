@@ -5,10 +5,6 @@ export default class FXRate {
   static populateQuery = `*`
   static api = supabase.from<IFXRate>(SupabaseTables.FX_RATES)
 
-  constructor() {
-
-  }
-
   static isValidCurrency(currency: string) {
     return currencies.includes(currency)
   }
@@ -27,7 +23,7 @@ export default class FXRate {
       ..._data
     })
     if (error) {
-      console.log(error)
+      throw error
     }
   } 
 

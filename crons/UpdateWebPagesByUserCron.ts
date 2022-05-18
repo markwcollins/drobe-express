@@ -41,21 +41,23 @@ export default class UpdateWebPagesCron {
       if (profileError) {
         throw profileError
       }
-      profile = profileData[0]
+      if (!profileData) return
+      profile = profileData[0] as IProfile
 
       const { data: productsData, error: productsError } = await Product.selectAndPopulate({ userId: profile.user_id })
       if (productsError) {
         throw productsError
       }
-      products = productsData
+      if (!productsData || !productsData.length) return
+      products = productsData as IProductPopulated[]
     } catch (e) {
       consoleError(e)
       return false
     }
- 
+
     if (!profile) return false
-    if (!products || !products.length) return false
-    
+    if (!products) return false
+
     return await Promise.allSettled(products.map(async (productData) => {
       try {
         if (!productData.webPage) {
@@ -65,8 +67,7 @@ export default class UpdateWebPagesCron {
         if (!WebPage.isValid(webPage)) {
           throw new Error('webPage.isValid is not missing')
         }
-        // only get data if there is a price alredy attached to the page and we the page is page_found
-
+        // only get data if there is a price alredy attached to the page and we the page is page_foundr
         const { hasPriceChanged, webPage: webPageUpdated } = await WebPage.updateOpenGraphData({ webPage, profile })
         if (hasPriceChanged && webPageUpdated) {
           // prices data is on both the product and web page so we need to update both

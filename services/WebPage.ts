@@ -12,11 +12,11 @@ export default class WebPage {
   }
 
   get isValid() {
-    return this.data?.id && this.data.price && this.data?.page_found
+    return this.data && WebPage.isValid(this.data)
   }
 
-  static isValid(webPage: IWebPage) {
-    return webPage.price && webPage.page_found
+  static isValid(webPage: Partial<IWebPage>) {
+    return webPage.id && webPage.price && webPage.page_found && webPage.display_url && !containsRestrictedSiteTerm(webPage.display_url)
   }
 
   async get() {
@@ -44,6 +44,7 @@ export default class WebPage {
   }
 
   static async extractOpenGraphData(url: string) {
+    console.log('extractOpenGraphData', url)
     const openGraphData = new OpenGraph(url)
     await openGraphData.init()
     return openGraphData?.data
@@ -118,3 +119,21 @@ export default class WebPage {
 interface IcreateHistory extends IIWebPageBaseHistoryResult {
   history?: IIWebPageBaseHistory 
 }
+
+const sitesToExclude = [
+  'google', 
+  'ad.doubleclick.net',
+  'facebook',
+  'clickserve.dartsearch.net',
+  'youtube',
+  'pixel',
+  'apple.com',
+  'track.trafficguard.ai',
+  'goo.gl',
+  'amazon',
+  'ebay',
+  'xg4ken.com',
+]
+
+const regexExclusion = new RegExp(sitesToExclude.join('|'))
+export const containsRestrictedSiteTerm = (url: string): boolean => regexExclusion.test(url)

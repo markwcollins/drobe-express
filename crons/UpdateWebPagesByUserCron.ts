@@ -42,7 +42,6 @@ export default class UpdateWebPagesCron {
   addWebPagesToQueue = async ({ profileFrom, profileTo }: IuserQueue) => {
     let profile: IProfile|undefined
     let products: IProductPopulated[]|undefined
-
     try {
       const { data: profileData, error: profileError } =  await supabase.from<IProfile>(SupabaseTables.PROFILES).select().range(profileFrom, profileFrom)
       if (profileError) {
@@ -79,6 +78,7 @@ export default class UpdateWebPagesCron {
       if (!WebPage.isValid(webPage)) {
         throw new Error('webPage.isValid is not missing')
       }
+
       // only get data if there is a price alredy attached to the page and we the page is page_foundr
       const { hasPriceChanged, webPage: webPageUpdated } = await WebPage.updateOpenGraphData({ webPage, profile })
       if (hasPriceChanged && webPageUpdated) {

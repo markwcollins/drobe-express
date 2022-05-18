@@ -28,12 +28,12 @@ export default class OpenGraph {
   async getData(url = this.url) {
     let graphData: any
     ({ graphData } = await this.openGraphRequest({ url } ));
-    if (!graphData) { 
-      ({ graphData } = await this.openGraphRequest({ url, useProxy: true })); // retry with proxy
-    }
-    if (!graphData) { 
-      ({ graphData } = await this.openGraphRequest({ url, useProxy: true, fullRender: true })); // retry with proxy and full render
-    }
+    // if (!graphData) { 
+    //   ({ graphData } = await this.openGraphRequest({ url, useProxy: true })); // retry with proxy
+    // }
+    // if (!graphData) { 
+    //   ({ graphData } = await this.openGraphRequest({ url, useProxy: true, fullRender: true })); // retry with proxy and full render
+    // }
     return graphData
   }
 
@@ -44,7 +44,7 @@ export default class OpenGraph {
     try {
       const urlEncoded = encodeURIComponent(url)
       const requestUrl = `${baseUrl}${urlEncoded}?app_id=${apiKey}&use_proxy=${useProxy}&full_render=${fullRender}`
-      const res = await axios.get(requestUrl)
+      const res = await axios.get(requestUrl, { timeout: 10000 })
       graphData =  res.data.hybridGraph
       if (!graphData) { 
         error = new Error(`hybridGraph data missing: ${url} use_proxy=${useProxy}&full_render=${fullRender}`)

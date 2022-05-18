@@ -17,7 +17,6 @@ declare global{
   }
 }
 
-
 const sentry = new ExpressSentry(app)
 
 app.use(cookieParser())
@@ -48,6 +47,3 @@ app.listen(PORT, () => {
   console.log(`Server is running running on ${PORT}`)
 })
 
-process.on('warning', (warning) => {
-  console.log(warning.stack);
-});

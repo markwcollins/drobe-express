@@ -19,7 +19,7 @@ export const initCrons = () => {
   const updateWebPagesCronRule = new schedule.RecurrenceRule()
   updateWebPagesCronRule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6] // every day
   updateWebPagesCronRule.hour = 19 // utc time
-  updateWebPagesCronRule.minute = 20
+  updateWebPagesCronRule.minute = 23
   
   schedule.scheduleJob(updateWebPagesCronRule, function() {
     const updateWebPagesByUserCron = new UpdateWebPagesByUserCron()

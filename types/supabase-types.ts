@@ -315,12 +315,18 @@ export enum AUTH_ACTION {
 // OPEN GRAPH
 
 export interface IOpenGraphFormattedData { 
+  url?: string
   title?: string, 
   site_name?: string, 
   image_url?: string, 
   description?: string, 
   price?: string, 
   currency?: string 
+} 
+
+export interface IOpenGraphFormattedApiRes extends IOpenGraphFormattedData { 
+  converted_currency?: Currency
+  converted_price?: string
 } 
 
 // CURRENCIES

@@ -7,18 +7,25 @@ import { trackAnalyticsEvent } from '../services/Analytics'
 import { EVENT_NAME } from '../types/events'
 import { supabase } from '../services/supabase'
 
-interface IupdateWebPagesProps {
+interface IuserQueue {
   from: number
   to: number
+}
+
+interface IwebPagesQueue {
+  product: IProductPopulated
+  profile: IProfile
 }
 
 export default class UpdateWebPagesCron {
   increment = 1
   concurrency = 1
-  queue: fastq.queueAsPromised<IupdateWebPagesProps, any>
+  userQueue: fastq.queueAsPromised<IuserQueue, any>
+  webPageQueue: fastq.queueAsPromised<IwebPagesQueue, any>
 
   constructor() {
-    this.queue = fastq.promise(this.updateWebPages, this.concurrency)
+    this.userQueue = fastq.promise(this.addWebPagesToQueue, this.concurrency)
+    this.webPageQueue = fastq.promise(this.updateWebPages, this.concurrency)
   }
 
   async run() {
@@ -28,11 +35,11 @@ export default class UpdateWebPagesCron {
     }
 
     for (let from = 0; from <= count; from += this.increment) {
-      await this.queue.push({ from, to: from + this.increment })
+      await this.userQueue.push({ from, to: from + this.increment })
     }
   }
 
-  async updateWebPages({ from, to }: IupdateWebPagesProps) {
+  async addWebPagesToQueue({ from, to }: IuserQueue) {
     let profile: IProfile|undefined
     let products: IProductPopulated[]|undefined
 
@@ -54,41 +61,45 @@ export default class UpdateWebPagesCron {
       consoleError(e)
       return false
     }
-
-    if (!profile) return false
+    
     if (!products) return false
 
-    return await Promise.allSettled(products.map(async (productData) => {
-      try {
-        if (!productData.webPage) {
-          throw new Error('productData.webPage is missing')
-        }
-        const webPage = productData.webPage
-        if (!WebPage.isValid(webPage)) {
-          throw new Error('webPage.isValid is not missing')
-        }
-        // only get data if there is a price alredy attached to the page and we the page is page_foundr
-        const { hasPriceChanged, webPage: webPageUpdated } = await WebPage.updateOpenGraphData({ webPage, profile })
-        if (hasPriceChanged && webPageUpdated) {
-          // prices data is on both the product and web page so we need to update both
-          const product = new Product(productData)
+    products.forEach(product => {
+      if (!profile) return false
+      this.webPageQueue.push({ profile, product })
+    })
+  }
 
-          trackAnalyticsEvent(product.data.profile_id, EVENT_NAME.PriceChanged, { 
-            url: webPageUpdated.url,
-            price: webPageUpdated.price,
-            oldPrice: webPage.price,
-            currency: webPageUpdated.currency,
-            title: webPageUpdated.title
-          })
-
-          product.update({ price: webPageUpdated.price, currency: webPageUpdated.currency, title: webPageUpdated.title })
-        }
-        return true
-      } catch (e) {
-        consoleError(e)
-        return false
+  async updateWebPages({ product, profile }: IwebPagesQueue) {
+    try {
+      if (!product.webPage) {
+        throw new Error('productData.webPage is missing')
       }
-    }))
+      const webPage = product.webPage
+      if (!WebPage.isValid(webPage)) {
+        throw new Error('webPage.isValid is not missing')
+      }
+      // only get data if there is a price alredy attached to the page and we the page is page_foundr
+      const { hasPriceChanged, webPage: webPageUpdated } = await WebPage.updateOpenGraphData({ webPage, profile })
+      if (hasPriceChanged && webPageUpdated) {
+        // prices data is on both the product and web page so we need to update both
+        const _product = new Product(product)
+
+        trackAnalyticsEvent(product.profile_id, EVENT_NAME.PriceChanged, { 
+          url: webPageUpdated.url,
+          price: webPageUpdated.price,
+          oldPrice: webPage.price,
+          currency: webPageUpdated.currency,
+          title: webPageUpdated.title
+        })
+
+        _product.update({ price: webPageUpdated.price, currency: webPageUpdated.currency, title: webPageUpdated.title })
+      }
+      return true
+    } catch (e) {
+      consoleError(e)
+      return false
+    }
   }
 
 }

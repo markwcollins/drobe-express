@@ -7,8 +7,8 @@ export const initCrons = () => {
 
   const updateFXRatesCronRule = new schedule.RecurrenceRule()
   updateFXRatesCronRule.dayOfWeek = [1, 2, 3, 4, 5] // every weekday
-  updateFXRatesCronRule.hour = 18 // utc time
-  updateFXRatesCronRule.minute = 0
+  updateFXRatesCronRule.hour = 1 // utc time
+  updateFXRatesCronRule.minute = 20
 
   schedule.scheduleJob(updateFXRatesCronRule, function() {
     console.log('starting updateFXRatesCronRule')
@@ -18,8 +18,8 @@ export const initCrons = () => {
 
   const updateWebPagesCronRule = new schedule.RecurrenceRule()
   updateWebPagesCronRule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6] // every day
-  updateWebPagesCronRule.hour = 18 // utc time
-  updateWebPagesCronRule.minute = 10
+  updateWebPagesCronRule.hour = 1 // utc time
+  updateWebPagesCronRule.minute = 30
   
   schedule.scheduleJob(updateWebPagesCronRule, function() {
     const updateWebPagesByUserCron = new UpdateWebPagesByUserCron()

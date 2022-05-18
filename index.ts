@@ -47,3 +47,7 @@ initCrons()
 app.listen(PORT, () => {
   console.log(`Server is running running on ${PORT}`)
 })
+
+process.on('warning', (warning) => {
+  console.log(warning.stack);
+});

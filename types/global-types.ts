@@ -175,7 +175,8 @@ export interface IWebPageBase extends Omit<ISupabaseUserResource, 'updated_by'|'
   homepage: URL
   display_url: URL
   title: string
-  // shop_id?: ApiID
+  shop_id?: ApiID
+  site_name?: string
   description?: string
   image_url?: URL
   saved?: boolean
@@ -280,6 +281,7 @@ export interface IShop extends ISupabaseResource {
   bucket: Bucket
   location: string
   location_banner_image: string
+  active: boolean
   country?: Country
   interests?: UserInterest[]
 }
@@ -412,7 +414,7 @@ export const USER_INTERESTS: IUserInterest[] = [
   { id: 'womens-fashion-1', name: 'Women\'s Fashion' },
   { id: 'mens-fashion-1', name: 'Men\'s fashion' },
   { id: 'kids-fashion-1', name: 'Kid\'s fashion' },
-  { id: 'home-1', name: 'Home' },
+  { id: 'home-1', name: 'Home and Furniture' },
   // USER_INTEREST_WHEN_UNKNOWN
 ]
 

@@ -3,6 +3,8 @@ import { supabase } from './supabase'
 import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase } from '../types/global-types'
 import FXRate from './FXRate'
 
+const CURRENCY_CONVERSION_ENABLED = false
+
 export default class WebPage {
   data?: Partial<IWebPage>
   static api = supabase.from<IWebPageBase>(SupabaseTables.WEB_PAGES)
@@ -65,14 +67,17 @@ export default class WebPage {
         price: webPage.price ,
         currency: webPage.currency,
         og_price: webPage.og_price,
-        og_currency: webPage.og_currency,
+        og_currency: webPage.og_currency
       })
         
       const userPreferredCurrency = profile?.currency
       const newOgCurrency = mostRecentOgData.currency
 
       let price = newOgPrice
-      if (userPreferredCurrency) {
+      let currency = newOgCurrency
+
+      if (CURRENCY_CONVERSION_ENABLED && userPreferredCurrency) {
+        currency = userPreferredCurrency
         price = await FXRate.convert({ 
           amount: newOgPrice, 
           from_currency: newOgCurrency, 
@@ -82,7 +87,7 @@ export default class WebPage {
 
       const updateData = {
         price, 
-        currency: userPreferredCurrency || newOgCurrency,
+        currency,
         og_price: newOgPrice,
         og_currency: newOgCurrency,
       }
@@ -99,7 +104,6 @@ export default class WebPage {
 
     return { hasPriceChanged, webPage: newWebPage }
   }
-  
 
   static createHistory({ timestamp = Date.now(), price, history, currency }: IcreateHistory ): IIWebPageBaseHistory {
     return {

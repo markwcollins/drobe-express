@@ -1,6 +1,6 @@
 
 
-import { Currency, currencies } from '../types/supabase-types'
+import { Currency, currencies } from '../types/global-types'
 import ExchangeRatesAPI from '../services/ExchangeRatesApi'
 import FXRate from '../services/FXRate'
 import { consoleError } from '../services/ErrorHandling'

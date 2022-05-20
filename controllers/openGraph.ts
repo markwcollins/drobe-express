@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import FXRate from '../services/FXRate'
 import OpenGraph from '../services/OpenGraph'
-import { IOpenGraphFormattedApiRes, IOpenGraphFormattedData } from '../types/supabase-types'
+import { IOpenGraphFormattedApiRes, IOpenGraphFormattedData } from '../types/global-types'
 
 /*
   body: {
@@ -35,7 +35,7 @@ const handler = async (req: Request, res: Response) => {
       
       return { 
         ...og.data,
-        url: og.url, 
+        url: og.url,
         converted_currency: profileCurrency || og.data?.currency, 
         converted_price: converted_price || og.data?.price,
       }

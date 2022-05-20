@@ -1,6 +1,6 @@
 import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
-import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase } from '../types/supabase-types'
+import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase } from '../types/global-types'
 import FXRate from './FXRate'
 
 export default class WebPage {
@@ -16,7 +16,7 @@ export default class WebPage {
   }
 
   static isValid(webPage: Partial<IWebPage>) {
-    return webPage.id && webPage.price && webPage.page_found && webPage.display_url && !containsRestrictedSiteTerm(webPage.display_url)
+    return webPage.id && webPage.price && webPage.page_found && webPage.display_url && !isRestrictedSite(webPage.display_url)
   }
 
   async get() {
@@ -44,7 +44,6 @@ export default class WebPage {
   }
 
   static async extractOpenGraphData(url: string) {
-    console.log('extractOpenGraphData', url)
     const openGraphData = new OpenGraph(url)
     await openGraphData.init()
     return openGraphData?.data
@@ -136,4 +135,4 @@ const sitesToExclude = [
 ]
 
 const regexExclusion = new RegExp(sitesToExclude.join('|'))
-export const containsRestrictedSiteTerm = (url: string): boolean => regexExclusion.test(url)
+export const isRestrictedSite = (url: string): boolean => regexExclusion.test(url)

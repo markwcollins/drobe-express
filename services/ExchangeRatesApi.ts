@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Currency } from '../types/supabase-types'
+import { Currency } from '../types/global-types'
 import { consoleError } from './ErrorHandling'
 
 export default class ExchangeRatesAPI {

@@ -1,7 +1,7 @@
 import fastq from 'fastq'
 import WebPage from '../services/WebPage'
 import Product from '../services/Product'
-import { IProductPopulated, IProfile, SupabaseTables } from '../types/supabase-types'
+import { IProductPopulated, IProfile, SupabaseTables } from '../types/global-types'
 import { consoleError } from '../services/ErrorHandling'
 import { trackAnalyticsEvent } from '../services/Analytics'
 import { EVENT_NAME } from '../types/events'

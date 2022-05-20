@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import CONFIG from '../config'
-import { ApiID, IDefault, SupabaseTables } from '../types/supabase-types'
+import { ApiID, IDefault, SupabaseTables } from '../types/global-types'
 
 export const createSupabaseClient = () => createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY)
 export const createSupabaseApi = () => createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_SERVICE_ROLE)

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { User, Session } from '@supabase/supabase-js'
-import { USER_TYPE, SupabaseTables } from '../types/supabase-types'
+import { USER_TYPE, SupabaseTables } from '../types/global-types'
 import { supabase } from '../services/supabase'
 import { consoleError } from '../services/ErrorHandling'
 

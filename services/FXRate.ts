@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { SupabaseTables, IFXRate, ICreateFXRate, currencies } from '../types/supabase-types'
+import { SupabaseTables, IFXRate, ICreateFXRate, currencies } from '../types/global-types'
 
 export default class FXRate {
   static populateQuery = `*`

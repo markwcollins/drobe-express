@@ -1,6 +1,6 @@
 import CONFIG from '../config'
 import axios from 'axios'
-import { IOpenGraphFormattedData } from '../types/supabase-types'
+import { IOpenGraphFormattedData } from '../types/global-types'
 
 export default class OpenGraph {
   url: string
@@ -68,7 +68,7 @@ export default class OpenGraph {
       data.title = hybridGraph.title
     }
     if (hybridGraph.site_name) {
-      data.title = hybridGraph.site_name
+      data.site_name = hybridGraph.site_name
     }
     if (hybridGraph.image && isValidHttpUrl(hybridGraph.image)) {
       data.image_url = hybridGraph.image

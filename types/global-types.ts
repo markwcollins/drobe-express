@@ -175,7 +175,7 @@ export interface IWebPageBase extends Omit<ISupabaseUserResource, 'updated_by'|'
   homepage: URL
   display_url: URL
   title: string
-  shop_id?: ApiID
+  // shop_id?: ApiID
   description?: string
   image_url?: URL
   saved?: boolean
@@ -203,7 +203,6 @@ export interface IIWebPageBaseHistory {
 export interface IWebPagePopulated extends IWebPageBase {}
 
 export interface IWebPage extends IWebPagePopulated {}
-
 
 // TAGS
 
@@ -280,6 +279,7 @@ export interface IShop extends ISupabaseResource {
   featured: boolean
   bucket: Bucket
   location: string
+  location_banner_image: string
   country?: Country
   interests?: UserInterest[]
 }
@@ -359,7 +359,7 @@ export type CountryID = typeof COUNTRIES[number]['id']
 
 export const COUNTRIES_OBJ: {[key: CountryID]: ICountry}  = COUNTRIES.reduce((obj, country) => ({ ...obj, [country.id]: country }), {})
 
-// FX_RATES
+// FX RATES and CURRENCIES
 
 export interface IFXRate  {
   from_currency: string
@@ -411,16 +411,74 @@ export const USER_INTEREST_WHEN_UNKNOWN =  { id: 'unknown', name: 'Featured' }
 export const USER_INTERESTS: IUserInterest[] = [
   { id: 'womens-fashion-1', name: 'Women\'s Fashion' },
   { id: 'mens-fashion-1', name: 'Men\'s fashion' },
-  { id: 'furniture-1', name: 'Furniture' },
-  { id: 'home-decor-1', name: 'Home decor' },
-  { id: 'art-1', name: 'Art' },
-  { id: 'weddings-1', name: 'Weddings' },
   { id: 'kids-fashion-1', name: 'Kid\'s fashion' },
-  { id: 'birthdays-1', name: 'Birthdays' },
-  USER_INTEREST_WHEN_UNKNOWN
+  { id: 'home-1', name: 'Home' },
+  // USER_INTEREST_WHEN_UNKNOWN
 ]
 
 export type UserInterest = typeof USER_INTERESTS[number]['name']
 export type UserInterestID = typeof USER_INTERESTS[number]['id']
 
 export const USER_INTERESTS_OBJ: {[key: UserInterestID]: IUserInterest} = USER_INTERESTS.reduce((obj, interest) => ({ ...obj, [interest.id]: interest }), {})
+
+
+// SITE TO EXCLUDES 
+
+const sitesToExclude = [
+  'google', 
+  'ad.doubleclick.net',
+  'facebook',
+  'clickserve.dartsearch.net',
+  'youtube',
+  'pixel',
+  'apple.com',
+  'track.trafficguard.ai',
+  'goo.gl',
+  'amazon',
+  'ebay',
+  'xg4ken.com',
+]
+
+const regexExclusion = new RegExp(sitesToExclude.join('|'))
+export const isRestrictedSite = (url: string): boolean => regexExclusion.test(url)
+
+// EVENTS
+
+export enum EVENT_NAME {
+  SignedUp = 'Signed Up',
+  AppLoaded = 'App Loaded',
+  ChromeExtensionLoaded = 'Chrome Extension Loaded',
+  ShopPageViewDetails = 'Shop - Page View Details',
+  BoardEditorShareBoard = 'BoardEditor - Share Board',
+  ShopSearchSearchGoogle = 'ShopSearch - Search Google',
+  AddedToWishList = 'Added To Wish List',
+  CreatedBoard = 'Created Board',
+  ClickedProductSourceLink = 'Clicked Product Source Link',
+  InvitedFriendsOpened = 'Invited Friends Opened',
+  InvitedFriendsCancelled = 'Invited Friends Cancelled',
+  InvitedFriendsSuccess = 'Invited Friends Success',
+  PriceChanged = 'Price Changed'
+}
+
+export const EventsForAPI = [
+  EVENT_NAME.SignedUp,
+  EVENT_NAME.AppLoaded,
+  EVENT_NAME.ChromeExtensionLoaded,
+  EVENT_NAME.AddedToWishList,
+  EVENT_NAME.CreatedBoard
+]
+
+export const EventsForAppsFlyer = [
+  EVENT_NAME.SignedUp,
+  EVENT_NAME.AppLoaded,
+  EVENT_NAME.ChromeExtensionLoaded,
+  EVENT_NAME.AddedToWishList,
+  EVENT_NAME.CreatedBoard
+]
+
+// these are required by facebook
+export enum ACTION_SOURCE { 
+  WEBSITE = 'website',
+  // APP = 'app',
+  OTHER = 'other'
+}

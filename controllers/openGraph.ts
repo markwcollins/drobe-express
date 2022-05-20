@@ -29,7 +29,6 @@ const handler = async (req: Request, res: Response) => {
       const profileCurrency = req.body?.profileCurrency as string | undefined
       if (CURRENCY_CONVERSION_ENABLED && profileCurrency && og.data?.price && profileCurrency !== og.data?.currency) {
         converted_currency = profileCurrency
-        
         converted_price = await FXRate.convert({ 
           amount: og.data.price, 
           from_currency: og.data?.currency, 

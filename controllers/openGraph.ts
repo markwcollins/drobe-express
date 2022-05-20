@@ -10,13 +10,13 @@ import { IOpenGraphFormattedApiRes, IOpenGraphFormattedData } from '../types/glo
   }
 */
 
+const CURRENCY_CONVERSION_ENABLED = false
+
 const handler = async (req: Request, res: Response) => {
   const urls = req.body?.urls as string[] | undefined
   if (!urls || !urls.length) {
     return res.status(400).send('Urls missing')
   }
-
-  const profileCurrency = req.body?.profileCurrency as string | undefined
 
   try {
     const openGraphs = await Promise.allSettled(urls.map(async (url): Promise<IOpenGraphFormattedApiRes> => {
@@ -24,19 +24,23 @@ const handler = async (req: Request, res: Response) => {
       await og.init() 
 
       let converted_price: string|undefined
+      let converted_currency: string|undefined
 
-      if (profileCurrency && og.data?.price && profileCurrency !== og.data?.currency) {
+      const profileCurrency = req.body?.profileCurrency as string | undefined
+      if (CURRENCY_CONVERSION_ENABLED && profileCurrency && og.data?.price && profileCurrency !== og.data?.currency) {
+        converted_currency = profileCurrency
+        
         converted_price = await FXRate.convert({ 
           amount: og.data.price, 
           from_currency: og.data?.currency, 
-          to_currency: profileCurrency 
+          to_currency: converted_currency 
         })
       }
       
       return { 
         ...og.data,
         url: og.url,
-        converted_currency: profileCurrency || og.data?.currency, 
+        converted_currency: converted_currency || og.data?.currency, 
         converted_price: converted_price || og.data?.price,
       }
     }))

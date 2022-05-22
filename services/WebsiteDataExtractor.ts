@@ -87,8 +87,8 @@ export default class WebsiteDataExtractor {
     
     return {
       hybrid: {
-        ...WebsiteDataExtractor.formatOpenGraphData(openGraphData),
         ...WebsiteDataExtractor.formatSchemaIdData(schemeIdData),
+        ...WebsiteDataExtractor.formatOpenGraphData(openGraphData)
       },
       openGraphData,
       schemeIdData
@@ -96,13 +96,19 @@ export default class WebsiteDataExtractor {
   }
 
   static formatOpenGraphData(data: IOpenGraphRaw): IWebsiteProductData {
+    let price = data.ogProductPriceAmount || data.ogPriceAmount || data.productPriceAmount
+    price = price && cleanPriceString(price)
+
+    let currency = data.ogProductPriceCurrency || data.ogPriceCurrency || data.productPriceCurrency || data.priceStandardAmount
+    currency = currency && currency.toUpperCase()
+
     return {
       title: data.ogTitle,
       site_name: data.ogSiteName,
       image_url: data.ogImage?.url,
       description: data.ogDescription,
-      price: data.ogProductPriceAmount || data.ogPriceAmount || data.productPriceAmount,
-      currency: data.ogProductPriceCurrency || data.ogPriceCurrency || data.productPriceCurrency || data.priceStandardAmount,
+      price,
+      currency,
       availability: data.ogAvailability ? !!data.ogAvailability : undefined
     }
   }
@@ -152,7 +158,7 @@ export default class WebsiteDataExtractor {
     try {
       const $ = cheerio.load(html)
       /* @ts-ignore */
-      const jsonRaw = $("script[type='application/ld+json']")[0].children[0].data
+      const jsonRaw = $("script[type='application/ld+json']")[0]?.children[0]?.data
         // do not use JSON.stringify on the jsonRaw content, as it's already a string
       if (jsonRaw) {
         data = JSON.parse(jsonRaw) as {}
@@ -173,4 +179,23 @@ export const isValidHttpUrl = (string:string) => {
     return false; 
   }
   return url.protocol === 'http:' || url.protocol === 'https:'
+}
+
+
+const cleanPriceString = (price: string): string => {
+  // `$ 4,000.00` => ` 4,000.00` => `4,000.00` => `4000.00`
+  // `4.000,00€` => `4.000,00` => `4000,00` => `4000.00`
+  // `4.000,00` => `4000,00` => `4000.00`x
+
+  // remove currency symbols and whitspace
+  let _price = price.replace(/[^0-9\.,]+/g, '').trim()
+
+   // remove the `,` if the string is formatted in euro style
+  const indexOf3rdLast = _price.length - 3 
+  if (_price.substring(indexOf3rdLast, indexOf3rdLast + 1) === ',') {
+    _price = _price.replace('.', '').replace(',','.')
+  }
+
+  _price = _price.replace(',', '')
+  return _price
 }

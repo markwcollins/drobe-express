@@ -14,7 +14,7 @@ const corsOptions = {
 }
 
 router.post('/proxy-url', proxyUrl)
-router.post('/website-data', validateSupabaseJwt, WebsiteDataExtractor)
+router.post('/website-data', WebsiteDataExtractor)
 router.post('/convert-guest-to-user', validateSupabaseJwt, convertGuestToUser)
 router.post('/track-event', [cors(corsOptions), validateSupabaseJwt], trackEvent)
 

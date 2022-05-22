@@ -410,7 +410,6 @@ export const USER_INTERESTS: IUserInterest[] = [
   { id: 'mens-fashion-1', name: 'Men\'s fashion' },
   { id: 'kids-fashion-1', name: 'Kid\'s fashion' },
   { id: 'home-1', name: 'Home and Furniture' },
-  // USER_INTEREST_WHEN_UNKNOWN
 ]
 
 export type UserInterest = typeof USER_INTERESTS[number]['name']
@@ -422,7 +421,7 @@ export const USER_INTERESTS_OBJ: {[ key: UserInterestID ]: IUserInterest} = USER
 // SITE TO EXCLUDES 
 
 const sitesToExclude = [
-  'google', 
+  // 'google', 
   'ad.doubleclick.net',
   'facebook',
   'clickserve.dartsearch.net',
@@ -476,6 +475,6 @@ export const EventsForAppsFlyer = [
 // these are required by facebook
 export enum ACTION_SOURCE { 
   WEBSITE = 'website',
-  // APP = 'app',
+  // APP = 'app', // not available option
   OTHER = 'other'
 }

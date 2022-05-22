@@ -8,8 +8,8 @@ import { EVENT_NAME } from '../types/events'
 import { supabase } from '../services/supabase'
 
 interface IuserQueue {
-  profileFrom: number
-  profileTo: number
+  profileFrom: number 
+  // profileTo: number // not implemented
 }
 
 interface IwebPagesQueue {
@@ -35,15 +35,15 @@ export default class UpdateWebPagesCron {
     }
 
     for (let profileFrom = 0; profileFrom <= count; profileFrom += this.increment) {
-      await this.userQueue.push({ profileFrom, profileTo: profileFrom + this.increment})
+      await this.userQueue.push({ profileFrom })
     }
   }
 
-  addWebPagesToQueue = async ({ profileFrom, profileTo }: IuserQueue) => {
+  addWebPagesToQueue = async ({ profileFrom }: IuserQueue) => {
     let profile: IProfile|undefined
     let products: IProductPopulated[]|undefined
     try {
-      const { data: profileData, error: profileError } =  await supabase.from<IProfile>(SupabaseTables.PROFILES).select().range(profileFrom, profileFrom)
+      const { data: profileData, error: profileError } = await supabase.from<IProfile>(SupabaseTables.PROFILES).select().range(profileFrom, profileFrom)
       if (profileError) {
         throw profileError
       }
@@ -80,17 +80,18 @@ export default class UpdateWebPagesCron {
       }
 
       // only get data if there is a price alredy attached to the page and we the page is page_foundr
-      const { hasPriceChanged, webPage: webPageUpdated } = await WebPage.updateOpenGraphData({ webPage, profile })
+      const { hasPriceChanged, webPage: webPageUpdated } = await WebPage.updateProductData({ webPage, profile })
       if (hasPriceChanged && webPageUpdated) {
+
         // prices data is on both the product and web page so we need to update both
         const _product = new Product(product)
 
         trackAnalyticsEvent(product.profile_id, EVENT_NAME.PriceChanged, { 
           url: webPageUpdated.url,
           price: webPageUpdated.price,
-          oldPrice: webPage.price,
           currency: webPageUpdated.currency,
-          title: webPageUpdated.title
+          title: webPageUpdated.title,
+          oldPrice: webPage.price
         })
 
         _product.update({ price: webPageUpdated.price, currency: webPageUpdated.currency, title: webPageUpdated.title })
@@ -101,5 +102,4 @@ export default class UpdateWebPagesCron {
       return false
     }
   }
-
 }

@@ -182,8 +182,6 @@ export interface IWebPageBase extends Omit<ISupabaseUserResource, 'updated_by'|'
   saved?: boolean
   price?: string
   currency?: string
-  og_price?: string
-  og_currency?: string
   updated_at?: Date
   history?: IIWebPageBaseHistory
   page_found?: boolean
@@ -193,8 +191,6 @@ export interface IIWebPageBaseHistoryResult {
   timestamp?: number, 
   price?: string, 
   currency?: string 
-  og_price?: string
-  og_currency?: string
 }
 
 export interface IIWebPageBaseHistory {
@@ -316,7 +312,7 @@ export enum AUTH_ACTION {
 
 // OPEN GRAPH
 
-export interface IOpenGraphFormattedData { 
+export interface IWebsiteProductData { 
   url?: string
   title?: string, 
   site_name?: string, 
@@ -324,17 +320,14 @@ export interface IOpenGraphFormattedData {
   description?: string, 
   price?: string, 
   currency?: string 
-} 
-
-export interface IOpenGraphFormattedApiRes extends IOpenGraphFormattedData { 
-  converted_currency?: Currency
-  converted_price?: string
+  availability?: boolean
 } 
 
 // CURRENCIES
 
 export const currencies = ['AUD','USD','GBP','NZD','CAD','EUR','SGD','HKD','NOK']
 export type Currency = typeof currencies[number]
+export const isValidCurrency = (currency: Currency): boolean => currencies.includes(currency)
 
 // COUNTRIES
 
@@ -360,6 +353,8 @@ export type Country = typeof COUNTRIES[number]['name']
 export type CountryID = typeof COUNTRIES[number]['id']
 
 export const COUNTRIES_OBJ: {[key: CountryID]: ICountry}  = COUNTRIES.reduce((obj, country) => ({ ...obj, [country.id]: country }), {})
+
+export const isValidCountry = (country: string): boolean => !!COUNTRIES_OBJ[country]
 
 // FX RATES and CURRENCIES
 
@@ -421,7 +416,7 @@ export const USER_INTERESTS: IUserInterest[] = [
 export type UserInterest = typeof USER_INTERESTS[number]['name']
 export type UserInterestID = typeof USER_INTERESTS[number]['id']
 
-export const USER_INTERESTS_OBJ: {[key: UserInterestID]: IUserInterest} = USER_INTERESTS.reduce((obj, interest) => ({ ...obj, [interest.id]: interest }), {})
+export const USER_INTERESTS_OBJ: {[ key: UserInterestID ]: IUserInterest} = USER_INTERESTS.reduce((obj, interest) => ({ ...obj, [interest.id]: interest }), {})
 
 
 // SITE TO EXCLUDES 

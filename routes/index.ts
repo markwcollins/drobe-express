@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import proxyUrl from '../controllers/proxyUrl'
-import openGraph from '../controllers/openGraph'
+import WebsiteDataExtractor from '../controllers/websiteData'
 import convertGuestToUser from '../controllers/convertGuestToUser'
 import trackEvent from '../controllers/trackEvent'
 import validateSupabaseJwt from '../middleware/validateSupabaseJwt'
@@ -14,7 +14,7 @@ const corsOptions = {
 }
 
 router.post('/proxy-url', proxyUrl)
-router.post('/open-graph', validateSupabaseJwt, openGraph)
+router.post('/website-data', validateSupabaseJwt, WebsiteDataExtractor)
 router.post('/convert-guest-to-user', validateSupabaseJwt, convertGuestToUser)
 router.post('/track-event', [cors(corsOptions), validateSupabaseJwt], trackEvent)
 

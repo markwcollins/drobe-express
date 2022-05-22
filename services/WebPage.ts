@@ -1,9 +1,7 @@
-import OpenGraph from './OpenGraph'
+// import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
 import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase } from '../types/global-types'
-import FXRate from './FXRate'
-
-const CURRENCY_CONVERSION_ENABLED = false
+import WebsiteDataExtractor from './WebsiteDataExtractor'
 
 export default class WebPage {
   data?: Partial<IWebPage>
@@ -45,52 +43,31 @@ export default class WebPage {
     return data?.[0]
   }
 
-  static async extractOpenGraphData(url: string) {
-    const openGraphData = new OpenGraph(url)
-    await openGraphData.init()
-    return openGraphData?.data
-  }
-  
-  static async updateOpenGraphData({ webPage, profile }: { webPage: IWebPage, profile?: IProfile}) {
-    let hasPriceChanged = false
-    const mostRecentOgData = await WebPage.extractOpenGraphData(webPage.url)
-    const newOgPrice = mostRecentOgData?.price
-    const oldOgPrice = webPage.og_price
+  static async updateProductData({ webPage, profile }: { webPage: IWebPage, profile?: IProfile}) {
     let newWebPage: IWebPage|undefined
+    let hasPriceChanged = false
+    const userPreferredCountry= profile?.country
 
-    if (newOgPrice && oldOgPrice && newOgPrice !== oldOgPrice) { // only update if the price is different
+    const mostRecentData = await WebsiteDataExtractor.getProductData({ url: webPage.url, country: userPreferredCountry })
+    const newPrice = mostRecentData.hybrid?.price
+    const newCurrency = mostRecentData.hybrid?.currency
+    const oldPrice = webPage.price
+
+    if (newPrice && oldPrice && newPrice !== oldPrice) { // only update if the price is different
       hasPriceChanged = true
       
       // default history if it doesn't exist yet
       const oldHistory = webPage.history || WebPage.createHistory({ 
         timestamp: new Date(webPage.inserted_at!).getTime(), 
         price: webPage.price ,
-        currency: webPage.currency,
-        og_price: webPage.og_price,
-        og_currency: webPage.og_currency
+        currency: webPage.currency
       })
-        
-      const userPreferredCurrency = profile?.currency
-      const newOgCurrency = mostRecentOgData.currency
-
-      let price = newOgPrice
-      let currency = newOgCurrency
-
-      if (CURRENCY_CONVERSION_ENABLED && userPreferredCurrency) {
-        currency = userPreferredCurrency
-        price = await FXRate.convert({ 
-          amount: newOgPrice, 
-          from_currency: newOgCurrency, 
-          to_currency: userPreferredCurrency
-        }) || newOgPrice
-      } 
 
       const updateData = {
-        price, 
-        currency,
-        og_price: newOgPrice,
-        og_currency: newOgCurrency,
+        price: newPrice, 
+        currency: newCurrency,
       }
+
       // update price to new price and add history
       newWebPage = await WebPage.update(webPage.id, { 
         ...updateData,
@@ -104,6 +81,66 @@ export default class WebPage {
 
     return { hasPriceChanged, webPage: newWebPage }
   }
+
+  // static async extractOpenGraphData(url: string) {
+  //   const openGraphData = new OpenGraph(url)
+  //   await openGraphData.init()
+  //   return openGraphData?.data
+  // }
+  
+  // static async updateOpenGraphData({ webPage, profile }: { webPage: IWebPage, profile?: IProfile}) {
+  //   let hasPriceChanged = false
+  //   const mostRecentOgData = await WebPage.extractOpenGraphData(webPage.url)
+  //   const newOgPrice = mostRecentOgData?.price
+  //   const oldOgPrice = webPage.og_price
+  //   let newWebPage: IWebPage|undefined
+
+  //   if (newOgPrice && oldOgPrice && newOgPrice !== oldOgPrice) { // only update if the price is different
+  //     hasPriceChanged = true
+      
+  //     // default history if it doesn't exist yet
+  //     const oldHistory = webPage.history || WebPage.createHistory({ 
+  //       timestamp: new Date(webPage.inserted_at!).getTime(), 
+  //       price: webPage.price ,
+  //       currency: webPage.currency,
+  //       og_price: webPage.og_price,
+  //       og_currency: webPage.og_currency
+  //     })
+        
+  //     const userPreferredCurrency = profile?.currency
+  //     const newOgCurrency = mostRecentOgData.currency
+
+  //     let price = newOgPrice
+  //     let currency = newOgCurrency
+
+  //     if (CURRENCY_CONVERSION_ENABLED && userPreferredCurrency) {
+  //       currency = userPreferredCurrency
+  //       price = await FXRate.convert({ 
+  //         amount: newOgPrice, 
+  //         from_currency: newOgCurrency, 
+  //         to_currency: userPreferredCurrency
+  //       }) || newOgPrice
+  //     } 
+
+  //     const updateData = {
+  //       price, 
+  //       currency,
+  //       og_price: newOgPrice,
+  //       og_currency: newOgCurrency,
+  //     }
+  //     // update price to new price and add history
+  //     newWebPage = await WebPage.update(webPage.id, { 
+  //       ...updateData,
+  //       history: WebPage.createHistory({ 
+  //         timestamp: Date.now(), 
+  //         ...updateData,
+  //         history: oldHistory
+  //       })  
+  //     })
+  //   }
+
+  //   return { hasPriceChanged, webPage: newWebPage }
+  // }
 
   static createHistory({ timestamp = Date.now(), price, history, currency }: IcreateHistory ): IIWebPageBaseHistory {
     return {

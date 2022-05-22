@@ -20,6 +20,7 @@ interface IOpenGraphRaw {
   ogProductPriceCurrency?: string
   ogPriceCurrency?: string
   productPriceCurrency?: string
+  priceStandardAmount?: string
 
   ogProductAvailability?: string
   ogAvailability?: string
@@ -96,13 +97,12 @@ export default class WebsiteDataExtractor {
 
   static formatOpenGraphData(data: IOpenGraphRaw): IWebsiteProductData {
     return {
-      url: data.ogUrl,
       title: data.ogTitle,
       site_name: data.ogSiteName,
       image_url: data.ogImage?.url,
       description: data.ogDescription,
       price: data.ogProductPriceAmount || data.ogPriceAmount || data.productPriceAmount,
-      currency: data.ogProductPriceCurrency || data.ogPriceCurrency || data.productPriceCurrency,
+      currency: data.ogProductPriceCurrency || data.ogPriceCurrency || data.productPriceCurrency || data.priceStandardAmount,
       availability: data.ogAvailability ? !!data.ogAvailability : undefined
     }
   }
@@ -136,6 +136,11 @@ export default class WebsiteDataExtractor {
           multiple: false,
           property: 'product:price:currency',
           fieldName: 'productPriceCurrency',
+        },
+        {
+          multiple: false,
+          property: 'og:price:standard_amount',
+          fieldName: 'priceStandardAmount',
         },
       ] 
     })

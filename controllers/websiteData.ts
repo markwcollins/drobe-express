@@ -11,7 +11,7 @@ import { isValidCountry } from '../types/global-types'
 */
 
 const handler = async (req: Request, res: Response) => {
-  const url = req.body?.url as string
+  const url = req.body?.url as string | undefined
   if (!url) {
     return res.status(400).send('Url missing')
   }
@@ -20,7 +20,7 @@ const handler = async (req: Request, res: Response) => {
     return res.status(400).send('Invalid url')
   }
 
-  const country = req.body.country
+  const country = req.body.country as string | undefined
   if (country && !isValidCountry(country)) {
     return res.status(400).send('Invalid country or country not supported')
   }

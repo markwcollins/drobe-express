@@ -329,7 +329,7 @@ export const currencies = ['AUD','USD','GBP','NZD','CAD','EUR','SGD','HKD','NOK'
 export type Currency = typeof currencies[number]
 export const isValidCurrency = (currency: Currency): boolean => currencies.includes(currency)
 
-// COUNTRIES
+// Countries
 
 export interface ICountry {
   id: string
@@ -340,7 +340,7 @@ export interface ICountryUi extends ICountry {
   isActive: boolean
 }
 
-export const COUNTRIES: ICountry[] = [
+export const Countries: ICountry[] = [
   { id: 'au', name: 'Australia'},
   { id: 'us', name: 'United States'},
   { id: 'gb', name: 'United Kingdom'},
@@ -349,12 +349,12 @@ export const COUNTRIES: ICountry[] = [
   { id: 'other', name: 'Other'}
 ]
 
-export type Country = typeof COUNTRIES[number]['name']
-export type CountryID = typeof COUNTRIES[number]['id']
+export type Country = typeof Countries[number]['name']
+export type CountryID = typeof Countries[number]['id']
 
-export const COUNTRIES_OBJ: {[key: CountryID]: ICountry}  = COUNTRIES.reduce((obj, country) => ({ ...obj, [country.id]: country }), {})
+export const Countries_OBJ: {[key: CountryID]: ICountry}  = Countries.reduce((obj, country) => ({ ...obj, [country.id]: country }), {})
 
-export const isValidCountry = (country: string): boolean => !!COUNTRIES_OBJ[country]
+export const isValidCountry = (country: string): boolean => !!Countries_OBJ[country]
 
 // FX RATES and CURRENCIES
 

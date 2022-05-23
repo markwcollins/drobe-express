@@ -88,7 +88,6 @@ export default class WebsiteDataExtractor {
     const schemeIdData = WebsiteDataExtractor.extractSchemaIdData(html)
     const schemeIdDataFormatted = WebsiteDataExtractor.formatSchemaIdData(schemeIdData)
 
-
     const hybrid: IWebsiteProductData = {
       title: schemeIdDataFormatted.title || openGraphDataFormatted.title,
       site_name: openGraphDataFormatted.title || schemeIdDataFormatted.title,

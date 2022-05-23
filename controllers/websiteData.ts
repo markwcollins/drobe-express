@@ -27,7 +27,7 @@ const handler = async (req: Request, res: Response) => {
 
   try {
     const productData = await WebsiteDataExtractor.getProductData({ url, country })
-    res.status(200).json({ ...productData.hybrid })
+    res.status(200).json(productData)
   } catch (e) {
     consoleError(e)
     res.status(500).send(e)

@@ -83,13 +83,24 @@ export default class WebsiteDataExtractor {
 
   static async extractData({ html }: { html: string }) {
     const openGraphData = WebsiteDataExtractor.extractOpenGraphData(html)
+    const openGraphDataFormatted = WebsiteDataExtractor.formatOpenGraphData(openGraphData)
+    
     const schemeIdData = WebsiteDataExtractor.extractSchemaIdData(html)
+    const schemeIdDataFormatted = WebsiteDataExtractor.formatSchemaIdData(schemeIdData)
+
+
+    const hybrid: IWebsiteProductData = {
+      title: schemeIdDataFormatted.title || openGraphDataFormatted.title,
+      site_name: openGraphDataFormatted.title || schemeIdDataFormatted.title,
+      image_url: schemeIdDataFormatted.image_url || openGraphDataFormatted.image_url,
+      description: schemeIdDataFormatted.description || openGraphDataFormatted.description,
+      price: schemeIdDataFormatted.price || openGraphDataFormatted.price,
+      currency: schemeIdDataFormatted.currency || openGraphDataFormatted.currency,
+      availability: schemeIdDataFormatted.availability || openGraphDataFormatted.availability,
+    }
     
     return {
-      hybrid: {
-        ...WebsiteDataExtractor.formatSchemaIdData(schemeIdData),
-        ...WebsiteDataExtractor.formatOpenGraphData(openGraphData)
-      },
+      hybrid,
       openGraphData,
       schemeIdData
     }
@@ -113,16 +124,17 @@ export default class WebsiteDataExtractor {
     }
   }
 
-  static formatSchemaIdData(data: any): IWebsiteProductData {
-    if (data?.['@type'] !== 'Product') return {}
 
-    const _data = data as Product
+  static formatSchemaIdData(data: any): IWebsiteProductData {
+    const _data = Array.isArray(data) ? data[0] : data as Product
+
+    if (_data?.['@type'] !== 'Product') return {}
     const _offer = _data.offers as Offer || {}
     
     return {
       title: _data.name as string,
       site_name: _data.name as string,
-      image_url: _data.image as string,
+      image_url: Array.isArray(_data.image) ? _data.image[0] : _data.image as string, // @TODO support
       description: _data.description as string,
       price: _offer.price as string,
       currency: _offer.priceCurrency as string,

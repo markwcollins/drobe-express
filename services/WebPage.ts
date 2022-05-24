@@ -49,36 +49,37 @@ export default class WebPage {
     const userPreferredCountry= profile?.country
 
     const mostRecentData = await WebsiteDataExtractor.getProductData({ url: webPage.url, country: userPreferredCountry })
-    const newPrice = mostRecentData.hybrid?.price
-    const newCurrency = mostRecentData.hybrid?.currency
-    const oldPrice = webPage.price
+    if (mostRecentData) {
+      const newPrice = mostRecentData.hybrid?.price
+      const newCurrency = mostRecentData.hybrid?.currency
+      const oldPrice = webPage.price
 
-    if (newPrice && oldPrice && newPrice !== oldPrice) { // only update if the price is different
-      hasPriceChanged = true
-      
-      // default history if it doesn't exist yet
-      const oldHistory = webPage.history || WebPage.createHistory({ 
-        timestamp: new Date(webPage.inserted_at!).getTime(), 
-        price: webPage.price ,
-        currency: webPage.currency
-      })
+      if (newPrice && oldPrice && newPrice !== oldPrice) { // only update if the price is different
+        hasPriceChanged = true
+        
+        // default history if it doesn't exist yet
+        const oldHistory = webPage.history || WebPage.createHistory({ 
+          timestamp: new Date(webPage.inserted_at!).getTime(), 
+          price: webPage.price ,
+          currency: webPage.currency
+        })
 
-      const updateData = {
-        price: newPrice, 
-        currency: newCurrency,
-      }
+        const updateData = {
+          price: newPrice, 
+          currency: newCurrency,
+        }
 
-      // update price to new price and add history
-      newWebPage = await WebPage.update(webPage.id, { 
-        ...updateData,
-        history: WebPage.createHistory({ 
-          timestamp: Date.now(), 
+        // update price to new price and add history
+        newWebPage = await WebPage.update(webPage.id, { 
           ...updateData,
-          history: oldHistory
-        })  
-      })
+          history: WebPage.createHistory({ 
+            timestamp: Date.now(), 
+            ...updateData,
+            history: oldHistory
+          })  
+        })
+      }
     }
-
     return { hasPriceChanged, webPage: newWebPage }
   }
 

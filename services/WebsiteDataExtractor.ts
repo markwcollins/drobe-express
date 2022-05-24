@@ -35,7 +35,8 @@ interface IOpenGraphRaw {
   favicon?: string
 }
 
-const PROXY_PASSWORD = '9exmcx947dkb'
+import CONFIG from '../config'
+const PROXY_PASSWORD = CONFIG.BRIGHT_DATA_PROXY_PASSWORD
 
 interface IGetDataParams  {
   url: string,
@@ -50,9 +51,8 @@ export default class WebsiteDataExtractor {
     // const url = 'https://www.marcjacobs.com/default/the-large-tote-bag/M0016156.html'
     const { html, error } = await WebsiteDataExtractor.getHtml({ url, country, useProxy: !!country  })
     if (html) {
-      return await WebsiteDataExtractor.extractData({ html })
+      return WebsiteDataExtractor.extractData({ html })
     }
-    throw error
   }
 
   static getHtml= async ({ url, country, useProxy = false }: IGetDataParams) => {
@@ -64,7 +64,7 @@ export default class WebsiteDataExtractor {
         throw new Error(`Invalid url on requesting html ${url}`)
       }
   
-      const options = useProxy 
+      const options = useProxy && country
         ? {
           httpsAgent: new HttpsProxyAgent({
             proxy: `http://lum-customer-hl_5175c637-zone-zone1-country-${country}:${PROXY_PASSWORD}@zproxy.lum-superproxy.io:22225`
@@ -78,7 +78,7 @@ export default class WebsiteDataExtractor {
       error = axios.isAxiosError(e) ? e :  new Error('Unknown error while extracting through proxy') 
       consoleError(error)
     }
-    return { html, error}
+    return { html, error }
   }
 
   static async extractData({ html }: { html: string }) {
@@ -123,19 +123,19 @@ export default class WebsiteDataExtractor {
     }
   }
 
-
   static formatSchemaIdData(data: any): IWebsiteProductData {
     const _data = Array.isArray(data) ? data[0] : data as Product
 
-    if (_data?.['@type'] !== 'Product') return {}
+    const type = _data?.['@type']
+    if(!type || !['Product'].includes(type)) return {}
     const _offer = _data.offers as Offer || {}
     
     return {
       title: _data.name as string,
       site_name: _data.name as string,
-      image_url: Array.isArray(_data.image) ? _data.image[0] : _data.image as string, // @TODO support
+      image_url: Array.isArray(_data.image) ? _data.image[0] : _data.image as string,
       description: _data.description as string,
-      price: _offer.price as string,
+      price: _offer.price === undefined ? undefined : '' + _offer.price, // @TODO need to support low and high price
       currency: _offer.priceCurrency as string,
       availability: _offer.availability ? !!_offer.availability as boolean : undefined
     }

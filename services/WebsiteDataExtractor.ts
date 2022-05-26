@@ -61,7 +61,7 @@ export default class WebsiteDataExtractor {
     
     try {
       if (!isValidHttpUrl(url)) {
-        throw new Error(`Invalid url on requesting html ${url}`)
+        throw new Error(`Invalid url on requesting html`)
       }
   
       const options = useProxy && country
@@ -76,7 +76,7 @@ export default class WebsiteDataExtractor {
       html = response.data as string
     } catch(e) {
       error = axios.isAxiosError(e) ? e :  new Error('Unknown error while extracting through proxy') 
-      consoleError(error)
+      consoleError(error, { url })
     }
     return { html, error }
   }

@@ -27,10 +27,12 @@ const handler = async (req: Request, res: Response) => {
 
   try {
     const productData = await WebsiteDataExtractor.getProductData({ url, country })
-    if (!productData) throw new Error(`WebsiteDataExtractor.getProductData failed for ${url} and ${country}`)
+    if (!productData) {
+      throw new Error(`WebsiteDataExtractor.getProductData failed`)
+    }
     res.status(200).json(productData)
   } catch (e) {
-    consoleError(e)
+    consoleError(e, { url, country })
     res.status(500).send(e)
   }
 }

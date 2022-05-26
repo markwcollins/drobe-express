@@ -13,7 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@devmehq/open-graph-extractor": "^1.0.1",
+    "@devmehq/open-graph-extractor": "^1.0.4",
     "@sentry/node": "^6.19.6",
     "@sentry/tracing": "^6.19.6",
     "@supabase/supabase-js": "^1.29.4",
@@ -28,7 +28,6 @@
     "express": "^4.17.2",
     "facebook-nodejs-business-sdk": "^13.0.0",
     "fastq": "^1.13.0",
-    "got": "11.8.3",
     "hpagent": "^1.0.0",
     "node-schedule": "^2.1.0",
     "schema-dts": "^1.1.0"

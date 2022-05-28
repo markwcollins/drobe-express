@@ -1,6 +1,6 @@
 // import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
-import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase } from '../types/global-types'
+import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase, isRestrictedSite } from '../types/global-types'
 import WebsiteDataExtractor from './WebsiteDataExtractor'
 
 export default class WebPage {
@@ -160,21 +160,3 @@ export default class WebPage {
 interface IcreateHistory extends IIWebPageBaseHistoryResult {
   history?: IIWebPageBaseHistory 
 }
-
-const sitesToExclude = [
-  'google', 
-  'ad.doubleclick.net',
-  'facebook',
-  'clickserve.dartsearch.net',
-  'youtube',
-  'pixel',
-  'apple.com',
-  'track.trafficguard.ai',
-  'goo.gl',
-  'amazon',
-  'ebay',
-  'xg4ken.com',
-]
-
-const regexExclusion = new RegExp(sitesToExclude.join('|'))
-export const isRestrictedSite = (url: string): boolean => regexExclusion.test(url)

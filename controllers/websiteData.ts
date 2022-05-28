@@ -1,7 +1,7 @@
 import { Request, Response } from 'express'
 import { consoleError } from '../services/ErrorHandling'
 import WebsiteDataExtractor, { isValidHttpUrl } from '../services/WebsiteDataExtractor'
-import { isValidCountry } from '../types/global-types'
+import { isValidCountry, isRestrictedSite } from '../types/global-types'
 
 /*
   body: {
@@ -18,6 +18,10 @@ const handler = async (req: Request, res: Response) => {
 
   if (!isValidHttpUrl(url)) {
     return res.status(400).send('Invalid url')
+  }
+
+  if (isRestrictedSite(url)) {
+    return res.status(400).send('Site not allowed for scanning')
   }
 
   const country = req.body.country as string | undefined

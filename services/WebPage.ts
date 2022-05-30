@@ -50,11 +50,14 @@ export default class WebPage {
 
     const mostRecentData = await WebsiteDataExtractor.getProductData({ url: webPage.url, country: userPreferredCountry })
     if (mostRecentData) {
+      
       const newPrice = mostRecentData.hybrid?.price
-      const newCurrency = mostRecentData.hybrid?.currency
       const oldPrice = webPage.price
 
-      if (newPrice && oldPrice && newPrice !== oldPrice) { // only update if the price is different
+      const newCurrency = mostRecentData.hybrid?.currency
+      const oldCurrency = webPage.currency
+
+      if (newPrice && oldPrice && newPrice !== oldPrice && newCurrency === oldCurrency) { 
         hasPriceChanged = true
         
         // default history if it doesn't exist yet

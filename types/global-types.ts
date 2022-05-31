@@ -478,3 +478,14 @@ export enum ACTION_SOURCE {
   // APP = 'app', // not available option
   OTHER = 'other'
 }
+
+// AFFILIATES
+
+export interface ISovrnGetLinkRes {
+  "url": string
+  "optimized": string
+  "affiliatable": boolean,
+  "competitive": any,
+  "optimizable": any,
+  "eepc": any
+}

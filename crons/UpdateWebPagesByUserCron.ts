@@ -91,7 +91,9 @@ export default class UpdateWebPagesCron {
           price: webPageUpdated.price,
           currency: webPageUpdated.currency,
           title: webPageUpdated.title,
-          oldPrice: webPage.price
+          oldPrice: webPage.price,
+          email: profile.email,
+          country: profile.country
         })
 
         _product.update({ price: webPageUpdated.price, currency: webPageUpdated.currency, title: webPageUpdated.title })

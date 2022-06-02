@@ -22,7 +22,7 @@ const handler = async (req: Request, res: Response) => {
     const response = await getAffiliateLink(url)
     res.status(200).json(response.data)
   } catch (e) {
-    consoleError(e)
+    consoleError(e, { url })
     res.status(400).send(e)
   }
 }

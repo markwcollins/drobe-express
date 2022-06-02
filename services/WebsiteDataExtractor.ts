@@ -76,7 +76,7 @@ export default class WebsiteDataExtractor {
       html = response.data as string
     } catch(e) {
       error = axios.isAxiosError(e) ? e :  new Error('Unknown error while extracting through proxy') 
-      consoleError(error, { url })
+      // consoleError(error, { url })
     }
     return { html, error }
   }

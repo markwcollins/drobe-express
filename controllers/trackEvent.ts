@@ -43,7 +43,7 @@ const handler = async (req: Request, res: Response) => {
 
     res.status(200).end()
   } catch (e) {
-    consoleError(e, req)
+    // consoleError(e, req)
     res.status(400).send(e)
   }
 }

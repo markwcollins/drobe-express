@@ -36,8 +36,8 @@ const handler = async (req: Request, res: Response) => {
     }
     res.status(200).json(productData)
   } catch (e) {
-    consoleError(e, { url, country })
-    res.status(500).send(e)
+    // consoleError(e, { url, country })
+    res.status(400).send(e)
   }
 }
 

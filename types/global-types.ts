@@ -35,6 +35,7 @@ export enum Folder {
 export enum UserAction {
   ONBOARDED_CHROME = 'onboarded_chrome',
   ONBOARDED_APP = 'onboarded',
+  SEARCHED_SHOP = 'searched_shop',
   SHOP_SCREENSHOT = 'shop_screenshot',
   LOADED_DEMO_DATA = 'loaded_demo_data',
   REMOVED_DEMO_DATA  = 'removed_demo_data',
@@ -422,6 +423,7 @@ export const USER_INTERESTS_OBJ: {[ key: UserInterestID ]: IUserInterest} = USER
 
 const sitesToExclude = [
   // 'google', 
+  'googleadservice',
   'ad.doubleclick.net',
   'facebook',
   'clickserve.dartsearch.net',
@@ -432,6 +434,7 @@ const sitesToExclude = [
   'goo.gl',
   'amazon',
   'ebay',
+  'viglink',
   'xg4ken.com',
 ]
 

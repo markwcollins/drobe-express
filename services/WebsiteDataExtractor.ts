@@ -5,6 +5,9 @@ import { HttpsProxyAgent } from 'hpagent'
 import { extractOpenGraph } from '@devmehq/open-graph-extractor'
 import { IWebsiteProductData } from '../types/global-types'
 import { Product, Offer } from 'schema-dts'
+import axiosRetry from 'axios-retry'
+
+axiosRetry(axios, { retries: 3 })
 
 interface IOpenGraphRaw {
   ogSiteName?: string

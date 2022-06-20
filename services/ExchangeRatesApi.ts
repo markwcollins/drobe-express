@@ -1,6 +1,5 @@
 import axios from 'axios'
-import { Currency } from '../types/global-types'
-import { consoleError } from './ErrorHandling'
+import { Currency } from '../types'
 
 export default class ExchangeRatesAPI {
   static apiKey = 'bg7DpspGjhzFaIOV7KZlglNPZjuvdEQ3'

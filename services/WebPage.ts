@@ -1,6 +1,5 @@
-// import OpenGraph from './OpenGraph'
 import { supabase } from './supabase'
-import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase, isRestrictedSite } from '../types/global-types'
+import { IWebPage, IIWebPageBaseHistory, SupabaseTables, IProfile, IIWebPageBaseHistoryResult, IWebPageBase, isRestrictedSite } from '../types'
 import WebsiteDataExtractor from './WebsiteDataExtractor'
 
 export default class WebPage {

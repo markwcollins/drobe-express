@@ -3,7 +3,7 @@ import * as cheerio from 'cheerio'
 import { consoleError } from './ErrorHandling'
 import { HttpsProxyAgent } from 'hpagent'
 import { extractOpenGraph } from '@devmehq/open-graph-extractor'
-import { IWebsiteProductData } from '../types/global-types'
+import { IWebsiteProductData } from '../types'
 import { Product, Offer } from 'schema-dts'
 import axiosRetry from 'axios-retry'
 
@@ -165,7 +165,6 @@ export default class WebsiteDataExtractor {
       ] 
     })
   }
-
   
   static extractSchemaIdData(html: string) {
     let data: Record<string, any> = {}
@@ -184,9 +183,8 @@ export default class WebsiteDataExtractor {
   }
 }
 
-
 export const isValidHttpUrl = (string:string) => {
-  let url:URL
+  let url: URL
   try {
     url = new URL(string)
   } catch (_) {

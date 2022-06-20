@@ -1,6 +1,6 @@
 import cyrpto from 'crypto'
 import CONFIG from '../config'
-import { EVENT_NAME, ACTION_SOURCE } from '../types/events'
+import { EVENT_NAME, ACTION_SOURCE } from '../types'
 
 const FACEBOOK_ACCESS_TOKEN = CONFIG.FACEBOOK_ACCESS_TOKEN
 const FACEBOOK_PIXEL_ID = CONFIG.FACEBOOK_PIXEL_ID

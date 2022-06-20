@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { SupabaseTables, IFXRate, ICreateFXRate, currencies } from '../types/global-types'
+import { SupabaseTables, IFXRate, currencies } from '../types'
 
 export default class FXRate {
   static populateQuery = `*`
@@ -13,7 +13,7 @@ export default class FXRate {
     if (!FXRate.isValidCurrency(currency)) {
       throw new Error('from currency not valid')
     }
-    const { data, error } = await FXRate.api.select().eq('from_currency', currency)
+    const { data } = await FXRate.api.select().eq('from_currency', currency)
     return data?.[0]
   }
 

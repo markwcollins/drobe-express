@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
-import { consoleError } from '../services/ErrorHandling'
 import WebsiteDataExtractor, { isValidHttpUrl } from '../services/WebsiteDataExtractor'
-import { isValidCountry, isRestrictedSite } from '../types/global-types'
+import { isValidCountry, isRestrictedSite } from '../types'
 
 /*
   body: {

@@ -7,6 +7,7 @@ import { IWebsiteProductData } from '../types'
 import { Product, Offer } from 'schema-dts'
 import axiosRetry from 'axios-retry'
 
+
 axiosRetry(axios, { retries: 3 })
 
 interface IOpenGraphRaw {
@@ -38,6 +39,7 @@ interface IOpenGraphRaw {
   favicon?: string
 }
 
+
 import CONFIG from '../config'
 const PROXY_PASSWORD = CONFIG.BRIGHT_DATA_PROXY_PASSWORD
 
@@ -53,9 +55,10 @@ export default class WebsiteDataExtractor {
     // const url = 'https://shonajoy.com/products/iris-cut-out-backless-midi-dress-saffron?variant=39539691913300'
     // const url = 'https://www.marcjacobs.com/default/the-large-tote-bag/M0016156.html'
     const { html, error } = await WebsiteDataExtractor.getHtml({ url, country, useProxy: !!country  })
-    if (html) {
+    if (html && !error) {
       return WebsiteDataExtractor.extractData({ html })
     }
+    throw error
   }
 
   static getHtml= async ({ url, country, useProxy = false }: IGetDataParams) => {
@@ -66,20 +69,22 @@ export default class WebsiteDataExtractor {
       if (!isValidHttpUrl(url)) {
         throw new Error(`Invalid url on requesting html`)
       }
-  
+
+      const proxyUrl = `http://lum-customer-hl_5175c637-zone-zone1-country-${country}:${PROXY_PASSWORD}@zproxy.lum-superproxy.io:22225`
+      
       const options = useProxy && country
         ? {
           httpsAgent: new HttpsProxyAgent({
-            proxy: `http://lum-customer-hl_5175c637-zone-zone1-country-${country}:${PROXY_PASSWORD}@zproxy.lum-superproxy.io:22225`
+            proxy: proxyUrl
           })
         } : undefined
-        
+
       const response = await axios.get(url, options)
-  
       html = response.data as string
+      // console.log(html)
     } catch(e) {
-      error = axios.isAxiosError(e) ? e :  new Error('Unknown error while extracting through proxy') 
-      // consoleError(error, { url })
+      // console.log(e)
+      error = axios.isAxiosError(e) ? e : new Error('Unknown error while extracting through proxy') 
     }
     return { html, error }
   }
@@ -177,6 +182,7 @@ export default class WebsiteDataExtractor {
         data = JSON.parse(jsonRaw) as {}
       }
     } catch (e) {
+      
       consoleError(e)
     }
     return data

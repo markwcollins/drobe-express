@@ -14,7 +14,6 @@ const SOVRN_GET_LINK_URL = 'http://api.viglink.com/api/link'
 // const SOVRN_GET_ANYWHERE_GENERATED_URL = 'https://viglink.io/uri/anywhere/generate'
 
 const getAffiliateLink = (url: string) => axios.get<ISovrnGetLinkRes>(`${SOVRN_GET_LINK_URL}?format=json&out=${url}&key=${CONFIG.SOVRN_API_KEY}`)
-// const getAffiliateAnywhereGenerateLink= (url: string) => axios.get(`${SOVRN_GET_ANYWHERE_GENERATED_URL}?&u=${url}&key=${CONFIG.SOVRN_API_KEY}`)
 
 const handler = async (req: Request, res: Response) => {
   const { url } = req.body
@@ -22,12 +21,12 @@ const handler = async (req: Request, res: Response) => {
     return res.status(400).send('url missing')
   }
   try {
-    // const response = await getAffiliateLink(url)
-    // res.status(200).json(response.data)
-    res.status(200).json({
-      'url': url,
-      'optimized': url
-    })
+    const response = await getAffiliateLink(url)
+    res.status(200).json(response.data)
+    // res.status(200).json({
+    //   'url': url,
+    //   'optimized': url
+    // })
     
   } catch (e) {
     consoleError(e, { url })

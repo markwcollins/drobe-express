@@ -20,7 +20,7 @@ declare global{
 const sentry = new ExpressSentry(app)
 
 app.use(cookieParser())
-app.use(express.json())
+app.use(express.json({limit: '50mb'}));
 app.set('trust proxy', true)
 
 import cors from 'cors'

@@ -1,6 +1,6 @@
 
 
-import { Currency, currencies } from '../types/global-types'
+import { Currency, currencies } from '../types'
 import ExchangeRatesAPI from '../services/ExchangeRatesApi'
 import FXRate from '../services/FXRate'
 import { consoleError } from '../services/ErrorHandling'
@@ -13,7 +13,7 @@ export default class UpdateFXRatesCron  {
   }
 
   async run() {
-    this.currencies.map(async from_currency => {
+    this.currencies.forEach(async from_currency => {
       try {
         const res = await ExchangeRatesAPI.getLatest(from_currency, currencies)
         await FXRate.upsert(from_currency, {

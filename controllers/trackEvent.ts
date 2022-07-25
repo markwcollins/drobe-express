@@ -1,7 +1,6 @@
 import { Request, Response } from 'express'
 import { createFacebookConversionEvent } from '../services/FacebookEvent'
-import { EVENT_NAME, ACTION_SOURCE, EventsForAPI } from '../types/events'
-import { consoleError } from '../services/ErrorHandling'
+import { EVENT_NAME, ACTION_SOURCE, EventsForAPI } from '../types'
 
 /*
   body: {

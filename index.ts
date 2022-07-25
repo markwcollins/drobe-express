@@ -32,6 +32,7 @@ app.get('/', (req, res) => {
 
 app.get('/health', (req, res) => {
   res.send('ok')
+
 })
 
 app.use('/api/v2', index)

@@ -1,10 +1,10 @@
 import fastq from 'fastq'
 import WebPage from '../services/WebPage'
 import Product from '../services/Product'
-import { IProductPopulated, IProfile, SupabaseTables } from '../types/global-types'
+import { IProductPopulated, IProfile, SupabaseTables } from '../types'
 import { consoleError } from '../services/ErrorHandling'
 import { trackAnalyticsEvent } from '../services/Analytics'
-import { EVENT_NAME } from '../types/events'
+import { EVENT_NAME } from '../types'
 import { supabase } from '../services/supabase'
 
 interface IuserQueue {

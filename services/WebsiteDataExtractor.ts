@@ -3,14 +3,12 @@ import * as cheerio from 'cheerio'
 import { consoleError } from './ErrorHandling'
 import { HttpsProxyAgent } from 'hpagent'
 import { extractOpenGraph } from '@devmehq/open-graph-extractor'
-import { IWebsiteProductData } from '../types/global-types'
+import { IWebsiteProductData } from '../types'
 import { Product, Offer } from 'schema-dts'
-<<<<<<< Updated upstream
-=======
+
 import axiosRetry from 'axios-retry'
 
 axiosRetry(axios, { retries: 3 })
->>>>>>> Stashed changes
 
 interface IOpenGraphRaw {
   ogSiteName?: string
@@ -41,6 +39,7 @@ interface IOpenGraphRaw {
   favicon?: string
 }
 
+
 import CONFIG from '../config'
 const PROXY_PASSWORD = CONFIG.BRIGHT_DATA_PROXY_PASSWORD
 
@@ -56,9 +55,10 @@ export default class WebsiteDataExtractor {
     // const url = 'https://shonajoy.com/products/iris-cut-out-backless-midi-dress-saffron?variant=39539691913300'
     // const url = 'https://www.marcjacobs.com/default/the-large-tote-bag/M0016156.html'
     const { html, error } = await WebsiteDataExtractor.getHtml({ url, country, useProxy: !!country  })
-    if (html) {
+    if (html && !error) {
       return WebsiteDataExtractor.extractData({ html })
     }
+    throw error
   }
 
   static getHtml= async ({ url, country, useProxy = false }: IGetDataParams) => {
@@ -69,20 +69,22 @@ export default class WebsiteDataExtractor {
       if (!isValidHttpUrl(url)) {
         throw new Error(`Invalid url on requesting html`)
       }
-  
+
+      const proxyUrl = `http://lum-customer-hl_5175c637-zone-zone1-country-${country}:${PROXY_PASSWORD}@zproxy.lum-superproxy.io:22225`
+      
       const options = useProxy && country
         ? {
           httpsAgent: new HttpsProxyAgent({
-            proxy: `http://lum-customer-hl_5175c637-zone-zone1-country-${country}:${PROXY_PASSWORD}@zproxy.lum-superproxy.io:22225`
+            proxy: proxyUrl
           })
         } : undefined
-        
+
       const response = await axios.get(url, options)
-  
       html = response.data as string
+      // console.log(html)
     } catch(e) {
-      error = axios.isAxiosError(e) ? e :  new Error('Unknown error while extracting through proxy') 
-      // consoleError(error, { url })
+      // console.log(e)
+      error = axios.isAxiosError(e) ? e : new Error('Unknown error while extracting through proxy') 
     }
     return { html, error }
   }
@@ -168,7 +170,6 @@ export default class WebsiteDataExtractor {
       ] 
     })
   }
-
   
   static extractSchemaIdData(html: string) {
     let data: Record<string, any> = {}
@@ -181,15 +182,15 @@ export default class WebsiteDataExtractor {
         data = JSON.parse(jsonRaw) as {}
       }
     } catch (e) {
+      
       consoleError(e)
     }
     return data
   }
 }
 
-
 export const isValidHttpUrl = (string:string) => {
-  let url:URL
+  let url: URL
   try {
     url = new URL(string)
   } catch (_) {

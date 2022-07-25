@@ -1,6 +1,6 @@
 
 import { supabase } from './supabase'
-import { ApiID, IProduct, IProductPopulated, SupabaseTables } from '../types/global-types'
+import { ApiID, IProduct, IProductPopulated, SupabaseTables } from '../types'
 
 export default class Product {
   id: ApiID

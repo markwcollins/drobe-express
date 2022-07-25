@@ -2,7 +2,7 @@ import axios from 'axios'
 import { Request, Response } from 'express'
 import CONFIG from '../config'
 import { consoleError } from '../services/ErrorHandling'
-import { ISovrnGetLinkRes } from '../types/global-types'
+import { ISovrnGetLinkRes } from '../types'
 
 /*
   body: {
@@ -10,8 +10,10 @@ import { ISovrnGetLinkRes } from '../types/global-types'
   }
 */
 
+const SOVRN_GET_LINK_URL = 'http://api.viglink.com/api/link'
+// const SOVRN_GET_ANYWHERE_GENERATED_URL = 'https://viglink.io/uri/anywhere/generate'
 
-const SOVRN_GET_LINK_URL = 'http://api.viglink.com/api/link?format=json'
+const getAffiliateLink = (url: string) => axios.get<ISovrnGetLinkRes>(`${SOVRN_GET_LINK_URL}?format=json&out=${url}&key=${CONFIG.SOVRN_API_KEY}`)
 
 const handler = async (req: Request, res: Response) => {
   const { url } = req.body
@@ -21,6 +23,11 @@ const handler = async (req: Request, res: Response) => {
   try {
     const response = await getAffiliateLink(url)
     res.status(200).json(response.data)
+    // res.status(200).json({
+    //   'url': url,
+    //   'optimized': url
+    // })
+    
   } catch (e) {
     consoleError(e, { url })
     res.status(400).send(e)
@@ -28,6 +35,3 @@ const handler = async (req: Request, res: Response) => {
 }
 
 export default handler
-
-
-const getAffiliateLink = (url: string) => axios.get<ISovrnGetLinkRes>(`${SOVRN_GET_LINK_URL}&out=${url}&key=${CONFIG.SOVRN_API_KEY}`)
